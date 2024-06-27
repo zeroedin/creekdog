@@ -25,7 +25,8 @@ jobs:
           folder: ./
           target-folder: ./
           clean: true
-          clean-exclude: '["v1"]'
+          clean-exclude: |
+            v1/
 
   deploy-v1:
     runs-on: ubuntu-latest
