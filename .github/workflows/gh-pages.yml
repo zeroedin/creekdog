@@ -28,9 +28,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
   
-      - uses: actions/checkout@v3
-        with: 
-          ref: release/v1
+
   deploy-v1:
     runs-on: ubuntu-latest
     permissions:
@@ -40,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with: 
-          ref: main
+          ref: release/v1
 
       - name: Deploy Version 1
         uses: peaceiris/actions-gh-pages@v4
