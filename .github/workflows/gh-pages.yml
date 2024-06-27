@@ -25,7 +25,7 @@ jobs:
           BRANCH: gh-pages
           FOLDER: ./
           TARGET_FOLDER: ./
-  
+          CLEAN: true
 
   deploy-v1:
     runs-on: ubuntu-latest
@@ -45,3 +45,4 @@ jobs:
           BRANCH: gh-pages
           FOLDER: ./
           TARGET_FOLDER: ./v1/
+          CLEAN: true
