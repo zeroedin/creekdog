@@ -20,10 +20,6 @@ jobs:
 
       - name: Deploy Current Version
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        # If you're changing the branch from main,
-        # also change the `main` in `refs/heads/main`
-        # below accordingly.
-        if: github.ref == 'refs/heads/main'
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
@@ -42,12 +38,8 @@ jobs:
         with: 
           ref: release/v1
 
-      - name: Deploy Version 1
+      - name: Deploy Version One
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        # If you're changing the branch from main,
-        # also change the `main` in `refs/heads/main`
-        # below accordingly.
-        if: github.ref == 'refs/heads/release/v1'
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
