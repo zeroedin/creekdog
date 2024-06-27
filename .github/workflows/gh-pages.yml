@@ -21,12 +21,11 @@ jobs:
       - name: Deploy Current Version
         uses: JamesIves/github-pages-deploy-action@4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
+          branch: gh-pages
           FOLDER: ./
-          TARGET_FOLDER: ./
-          CLEAN: true
-          CLEAN_EXCLUDE: '["v1"]'
+          target-folder: ./
+          clean: true
+          clean-exclude: '["v1"]'
 
   deploy-v1:
     runs-on: ubuntu-latest
@@ -42,8 +41,7 @@ jobs:
       - name: Deploy Version One
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./
-          TARGET_FOLDER: ./v1/
-          CLEAN: true
+          branch: gh-pages
+          folder: ./
+          target-folder: ./v1/
+          clean: true
