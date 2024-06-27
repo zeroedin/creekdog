@@ -26,6 +26,7 @@ jobs:
           FOLDER: ./
           TARGET_FOLDER: ./
           CLEAN: true
+          CLEAN_EXCLUDE: '["v1"]'
 
   deploy-v1:
     runs-on: ubuntu-latest
