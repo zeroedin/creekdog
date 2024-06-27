@@ -19,10 +19,10 @@ jobs:
           ref: main
 
       - name: Deploy Current Version
-        uses: JamesIves/github-pages-deploy-action@4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          FOLDER: ./
+          folder: ./
           target-folder: ./
           clean: true
           clean-exclude: '["v1"]'
