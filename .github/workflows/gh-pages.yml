@@ -19,15 +19,16 @@ jobs:
           ref: main
 
       - name: Deploy Current Version
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         # If you're changing the branch from main,
         # also change the `main` in `refs/heads/main`
         # below accordingly.
         if: github.ref == 'refs/heads/main'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          keep_files: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: ./
+          TARGET_FOLDER: ./
   
 
   deploy-v1:
@@ -42,13 +43,13 @@ jobs:
           ref: release/v1
 
       - name: Deploy Version 1
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         # If you're changing the branch from main,
         # also change the `main` in `refs/heads/main`
         # below accordingly.
         if: github.ref == 'refs/heads/release/v1'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          destination_dir: './v1'
-          keep_files: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: ./
+          TARGET_FOLDER: ./v1/
