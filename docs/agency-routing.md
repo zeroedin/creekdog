@@ -12,6 +12,28 @@ in whatever form that agency accepts. Two things vary independently:
 Categories are *not* pre-seeded by Creekdog; each watershed defines its own and
 attaches routing to them.
 
+## Step 0 — the in-bounds jurisdiction gate (before any routing)
+Routing only makes sense once a report is confirmed to be *this watershed's to
+handle*. So the first check on submission is **point-in-polygon against the watershed
+boundary**:
+
+- **In-bounds** → continue to routing below.
+- **Out-of-bounds** → outside the group's jurisdiction. Handle per a **per-watershed
+  policy**:
+  - `reject` — hard block at submission.
+  - `flag` *(recommended default)* — accept but tag **out-of-area** so the human
+    reviewer decides (the boundary check becomes an input to review, not a silent wall).
+  - `accept` — no gating.
+
+This gate is *one point vs one polygon per submission* — cheap in app code on any
+node (no SpatiaLite required; see `hosting-and-cost.md`). Defining the watershed
+boundary is therefore a **prerequisite to accepting reports**.
+
+**Future federation payoff:** the flagship knows every peer's boundary, so an
+out-of-bounds report at one node is often in-bounds for a neighbor — the network can
+eventually **hand a misdirected report to the correct watershed**. (A node alone
+knows only its own boundary; the flagship enables the handoff.)
+
 ## Two-layer model
 
 ### Layer 1 — Routing map (business config, per watershed)

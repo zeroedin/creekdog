@@ -61,14 +61,20 @@ SQLite": real GIS in a single file, no server — the upgrade a *self-hosted* no
 reaches for to get **watershed-boundary** and **jurisdiction-routing** point-in-
 polygon queries (see `agency-routing.md`) without running Postgres.
 
+**The in-bounds gate is required on every node — and it's cheap everywhere.**
+Validating that a submission falls inside the watershed boundary (the jurisdiction
+gate, see `agency-routing.md`) is *one point vs one polygon, once per submission* —
+trivial in plain app code on **any** node, including serverless/Rung 1. So this
+mandatory check does **not** force SpatiaLite.
+
 **Two node geo profiles** (proper watershed boundaries are wanted, `federation.md`):
 - **Self-managed** (e.g. **FODC**): **Rung 3 SpatiaLite** — proper boundary geometry
-  + point-in-polygon, still a single-file install on a ~$5 VPS. This is the profile
-  the FODC self-hosted federation test uses.
-- **Colocated / serverless**: **Rung 1** — store & display the boundary, do
-  point-in-polygon in app code. No native extension needed; stays $0.
-Either way the boundary is *published as coverage metadata*; only in-node
-point-in-polygon differs by profile.
+  for the *heavier* spatial work (bulk queries, sub-HUC labeling, agency-jurisdiction
+  routing), still a single-file install on a ~$5 VPS. The FODC federation test uses this.
+- **Colocated / serverless**: **Rung 1** — store & display the boundary, run the
+  in-bounds gate (and any point-in-polygon) in app code. No native extension; stays $0.
+Either way the boundary is *published as coverage metadata* and the in-bounds gate
+runs; only the heavier spatial queries differ by profile.
 
 **SpatiaLite caveat:** it's a *native extension*, so it needs a runtime that allows
 loading extensions — fine on VPS/Docker, but **many serverless SQLite platforms
