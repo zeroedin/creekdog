@@ -48,15 +48,23 @@ Agency:
   delivery:
     mode              # manual | email | prefilled-form | open311 | webhook
     config            # address / URL / credentials as needed
-    autoSend          # false = require staff approval before send (recommended)
+    autoSend          # auto-transmit AFTER human approval? (review is always required)
 ```
 
-## Human-in-the-loop (recommended for v1)
-Because submission is **anonymous**, spam and false reports are real. Recommendation:
-**nothing auto-sends to a government agency without a staff "approve & send" click.**
-- `manual` + `email` cover ~95% of real agencies without brittle automation.
-- Automation (`open311`, `webhook`, auto-`email`) becomes an opt-in per agency once
-  a watershed trusts its intake pipeline.
+## Human review is mandatory (settled)
+The original CreekDog auto-delivered every submission with **no spam protection**.
+Creekdog's rule going forward: **every submission is reviewed by a person before it
+leaves the system.** The human review *is* the spam/false-report filter — we
+deliberately avoid any machine-review/classification layer, which keeps the system
+**lightweight and easy to self-install**.
+
+- Flow: `submitted → (staff review) → approve & send → delivered → closed`
+  (or `rejected` — spam/duplicate/out-of-scope, never delivered).
+- `autoSend` therefore means **"auto-compose and transmit *after* a human approves,"**
+  not "send without review." There is no path that skips review.
+- Post-approval **delivery** may be automated (`email`, `open311`, `webhook`) or
+  manual (`manual`, `prefilled-form`) per agency. `manual` + `email` cover ~95% of
+  real agencies with almost no integration effort — the right Phase-1 default.
 
 ## Audit & closing the loop
 Every delivery attempt writes a **RoutingEvent**:

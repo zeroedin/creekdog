@@ -36,8 +36,11 @@ through a consortium.
    standards-aligned templating helper (no VDOM, no framework runtime).
 2. **W3C / Linked Data native.** Data is Linked Data expressed as **JSON-LD** so
    simple clients see plain JSON while the data remains interoperable RDF.
-3. **Agnostic & self-hostable.** Anyone can run the backend. No proprietary cloud
-   lock-in. MIT-licensed code; open data licensing for the scientific record.
+3. **Agnostic, self-hostable & lightweight.** Anyone can run the backend, and it
+   must be **easy to install** and cheap to operate — favor simple, few moving
+   parts over heavyweight infrastructure. No proprietary cloud lock-in.
+   MIT-licensed code; open data licensing for the scientific record.
+   *Corollary:* a **human reviewer is the spam filter** — no machine-review layer.
 4. **Right-sized modeling.** Use the lightest standard that fits. Don't force
    heavy sensor/biodiversity ontologies onto a simple citizen report.
 5. **Multi-tenant from the start.** One install can host many watershed groups.
@@ -167,4 +170,6 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | Standards right-sized: JSON-LD + schema.org + GeoJSON + SKOS for citizen reports; SOSA/Darwin Core reserved for later monitoring module. |
 | 2026-07-08 | **No pre-seeded categories.** Each watershed defines its own; the first-class relationship is category → routing-agency. See `agency-routing.md`. |
 | 2026-07-08 | Routing = two layers: per-watershed map (category→agency) + per-agency delivery adapter (manual/email/prefilled-form/open311/webhook), with a staff approval gate before any outbound send. |
-| _pending_ | **Backend fork open:** lean Solid-compatible API + Postgres/PostGIS (recommended) vs. Community Solid Server + triplestore (Solid-pure). See `backend-options.md`. |
+| 2026-07-08 | **Every submission is human-reviewed before delivery** (review = the spam filter; no machine-review layer). Original auto-delivery is replaced. |
+| 2026-07-08 | **Lightweight / easy-to-install** is an explicit goal, reinforcing few-moving-parts choices throughout. |
+| _pending_ | **Backend fork open:** lean Solid-compatible API + Postgres/PostGIS (recommended, and favored by the lightweight goal) vs. Community Solid Server + triplestore (Solid-pure). See `backend-options.md`. |
