@@ -15,11 +15,24 @@ Creekdog v1 is **one web app + one backend + one database**:
 4. Data is published as **JSON-LD** → this is what makes Creekdog *open* and
    *standards-compliant*. Nothing more is required for either.
 
-**"Open" = MIT code anyone can run + open data in a standard format. That's the
-whole bar.** Solid servers, triplestores, SPARQL, and federation are *deliberately
-deferred* — all remain possible as later add-ons, none blocks v1, and federation is
-a north-star ideal rather than a v1 requirement. Don't let them complicate the
-picture: build the four steps above first.
+**Federation is the core value proposition** — Creekdog is a *network* of watershed
+installs whose data interoperates, not a set of silos. Crucially, federation is
+achieved by **how each node publishes its data** (Linked Data / JSON-LD, a shared
+vocabulary, stable web addresses), **not** by any particular database. So each
+install stays "one app + one database" *and* is a full federation citizen, because
+the federation lives in the **publishing contract + an aggregator**, not inside
+every node. See `federation.md`.
+
+What that means for v1: build the four steps above **with two disciplines from day
+one** — (a) give everything a **stable URL as its identifier**, and (b) map each
+watershed's categories onto a **shared core vocabulary**. These are cheap and are
+the foundation federation stands on. The only *heavy* federation piece — an
+aggregator that gathers many nodes into one cross-watershed view — is centralized
+(likely creekdog.org) and never imposed on individual watersheds. Live federated
+SPARQL and triplestores remain optional, aggregator-side, later.
+
+**"Open" = MIT code anyone can run + open data in a standard format** — that plus the
+publishing contract is what makes the federation possible.
 
 ---
 
@@ -192,5 +205,7 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | Routing = two layers: per-watershed map (category→agency) + per-agency delivery adapter (manual/email/prefilled-form/open311/webhook), with a staff approval gate before any outbound send. |
 | 2026-07-08 | **Every submission is human-reviewed before delivery** (review = the spam filter; no machine-review layer). Original auto-delivery is replaced. |
 | 2026-07-08 | **Lightweight / easy-to-install** is an explicit goal, reinforcing few-moving-parts choices throughout. |
-| 2026-07-08 | **Backend RESOLVED (simple path):** one backend service + **Postgres/PostGIS**, publishing **JSON-LD**. "Open" and "standards-compliant" are satisfied by MIT code + JSON-LD open data — no Solid server or triplestore required. |
-| 2026-07-08 | **Deferred, non-blocking:** Solid *server*, triplestore, SPARQL endpoint, cross-install **federation**, WebID/Solid-OIDC. All remain possible as later *add-ons*; none is a v1 concern. Federation is a north-star ideal, not a v1 constraint. |
+| 2026-07-08 | **Federation is THE core value proposition** — Creekdog is a network of interoperating watershed nodes. Achieved via the data-*publishing contract* (Linked Data, shared vocab, stable URLs), not via any specific database. See `federation.md`. |
+| 2026-07-08 | **Backend RESOLVED (simple node):** each install = one backend service + **Postgres/PostGIS**, *publishing JSON-LD as its federation contract*. A node stays simple; it's a full federation citizen by publishing, not by running heavy infra. |
+| 2026-07-08 | **Day-one federation foundation (cheap, required):** (a) stable **URL identifiers** for everything; (b) a **shared core vocabulary** that per-watershed categories map onto. |
+| 2026-07-08 | **Deferred to the aggregator, not each node:** live federated **SPARQL**, triplestores. The aggregator (likely creekdog.org) harvests nodes' published data; individual watersheds never need this. |
