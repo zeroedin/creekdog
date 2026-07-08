@@ -21,7 +21,7 @@ the federation.
 Routing is a *local* decision; core-mapping is the *interoperability* decision.
 Different jobs, both attached to the local category.
 
-## Shared core concern scheme (v0 — DRAFT, curated by flagship)
+## Shared core concern scheme (v0 — ACCEPTED, curated by flagship)
 Stable URIs under `https://creekdog.org/vocab/concern/<id>`. Additive-only.
 
 | Core concept | Covers |
@@ -42,8 +42,9 @@ Stable URIs under `https://creekdog.org/vocab/concern/<id>`. Additive-only.
 cover most watersheds. `mining` and `oil-gas` are included because Deckers Creek
 (AMD) and the original tool ("suspicious drilling") both require them.
 
-> STATUS: proposal. The scheme should be reviewed against FODC's real category list
-> and refined before it is frozen as v0.
+> STATUS: **accepted as v0** (2026-07-08). Additive-only from here — future changes
+> add concepts or deprecate, never rename/remove, so peer mappings never break. Can
+> still be reconciled against FODC's real category list as peer #1 is configured.
 
 ## How a peer maps its categories
 
