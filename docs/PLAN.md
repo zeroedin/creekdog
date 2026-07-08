@@ -167,17 +167,23 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 
 - **Phase 0 — Foundations (now).** This plan; data-model sketch; retire the old
   Vue deploy; decide server/runtime; scaffold repo (API + web-components frontend).
-- **Phase 1 — Incident report MVP.** Single tenant. Submit a pollution report
-  (category + location on a map + description + photo + optional contact) →
-  stored as JSON-LD → public verified feed → basic agency-routing (email/webhook).
-  Web Components frontend (Lit). Public read API.
-- **Phase 2 — Multi-tenancy + fish catches.** Tenant config (categories, routing,
+- **Phase 1 — Incident report MVP.** Single tenant. Define the **watershed
+  boundary** (import HUC/GeoJSON, display on map, in-bounds check). Submit a
+  pollution report (category + location on a map + description + photo + optional
+  contact) → stored as JSON-LD → public verified feed → basic agency-routing
+  (email/webhook). Web Components frontend (Lit). Public read API.
+- **Phase 2 — Federation proof (FODC self-hosted).** *Federation is the core value,
+  so prove it early.* Stand up **FODC as a self-hosted, off-flagship node** using
+  SpatiaLite for its boundary; it publishes the **node contract** (verified reports
+  + coverage boundary as JSON-LD); the **flagship harvests** it into the aggregate
+  cross-watershed view. Real external peer = the real end-to-end test of the thesis.
+- **Phase 3 — Multi-tenancy + fish catches.** Tenant config (categories, routing,
   boundary); second report type (angler fish catch); moderation UI.
-- **Phase 3 — Public API hardening for native apps.** Documented, versioned
+- **Phase 4 — Public API hardening for native apps.** Documented, versioned
   HTTP+JSON-LD API; auth for staff; offline-friendly submission contract.
-- **Phase 4 — Structured monitoring module.** SOSA/QUDT chemistry + Darwin Core
+- **Phase 5 — Structured monitoring module.** SOSA/QUDT chemistry + Darwin Core
   fish/macroinvertebrate; SPARQL/GeoJSON query; GBIF/WQX export.
-- **Phase 5 — Consortium tooling.** Shared hosting ops, billing/cost-sharing,
+- **Phase 6 — Consortium tooling.** Shared hosting ops, billing/cost-sharing,
   governance.
 
 ## 9. Open questions
@@ -216,3 +222,6 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Cost model:** most/poor groups **colocate on the flagship and pay $0** (run nothing); self-host lite (SQLite / free-tier serverless) is ~$0–5/mo; real cost concentrates at the **flagship**, funded by consortium + nonprofit cloud credits. Geo at small scale needs no PostGIS (SpatiaLite / bbox math suffices). |
 | 2026-07-08 | **Day-one federation foundation (cheap, required):** (a) stable **URL identifiers** for everything; (b) a **shared core vocabulary** that per-watershed categories map onto. |
 | 2026-07-08 | **Deferred to the aggregator, not each node:** live federated **SPARQL**, triplestores. The aggregator (likely creekdog.org) harvests nodes' published data; individual watersheds never need this. |
+| 2026-07-08 | **Watershed boundary is first-class.** Each watershed/peer has a boundary polygon (HUC-sourced or custom): defines coverage, validates/labels reports (in-bounds, sub-HUC), drives the map — **and is published as node metadata** so the flagship maps coverage/overlap. |
+| 2026-07-08 | **Two node geo profiles.** *Self-managed* (e.g. FODC) uses **SpatiaLite** (Rung 3) for proper boundary + point-in-polygon, still a single-file simple install; *colocated/serverless* renders the boundary + does app-side point-in-polygon (Rung 1). |
+| 2026-07-08 | **FODC = the self-hosted (off-flagship) reference peer** — the real end-to-end federation test (publish → flagship harvest). Resolves the colocated-vs-self-hosted question for peer #1. Colocation stays the default for capacity-poor *other* groups. |

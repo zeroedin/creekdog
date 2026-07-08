@@ -59,6 +59,30 @@ A local category carries three things — label (local), `routesTo` (routing), a
 }
 ```
 
+## `Watershed` (the tenant / node identity)
+
+Each watershed/peer is a tenant with a **boundary polygon** and its own config. The
+boundary is both a local feature (validate/label/display reports) and **published
+node metadata** (its geographic coverage in the federation — see `federation.md`).
+
+```jsonc
+{
+  "@type": "Watershed",
+  "id": "https://fodc.example/",             // stable URL (self-hosted peer's base)
+  "name": "Deckers Creek",
+  "huc": "05020004",                          // USGS Hydrologic Unit Code (optional)
+  "boundary": {                               // GeoJSON Polygon — published as coverage
+    "type": "Polygon",
+    "coordinates": [ [ [-79.99,39.60], [-79.90,39.60], /* … */ ] ]
+  },
+  "categoryScheme": "https://fodc.example/categories/",
+  "agencies": ["https://creekdog.org/agency/wv-dep"]
+}
+```
+
+Point-in-polygon (report ∈ boundary) uses **SpatiaLite** on a self-managed node, or
+app-side code on a colocated/serverless node (`hosting-and-cost.md`).
+
 ## Second type: `FishCatch` (v2)
 
 Angler citizen-science observation — same "report" shape, different payload.

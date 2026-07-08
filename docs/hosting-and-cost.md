@@ -61,6 +61,15 @@ SQLite": real GIS in a single file, no server — the upgrade a *self-hosted* no
 reaches for to get **watershed-boundary** and **jurisdiction-routing** point-in-
 polygon queries (see `agency-routing.md`) without running Postgres.
 
+**Two node geo profiles** (proper watershed boundaries are wanted, `federation.md`):
+- **Self-managed** (e.g. **FODC**): **Rung 3 SpatiaLite** — proper boundary geometry
+  + point-in-polygon, still a single-file install on a ~$5 VPS. This is the profile
+  the FODC self-hosted federation test uses.
+- **Colocated / serverless**: **Rung 1** — store & display the boundary, do
+  point-in-polygon in app code. No native extension needed; stays $0.
+Either way the boundary is *published as coverage metadata*; only in-node
+point-in-polygon differs by profile.
+
 **SpatiaLite caveat:** it's a *native extension*, so it needs a runtime that allows
 loading extensions — fine on VPS/Docker, but **many serverless SQLite platforms
 (e.g. Cloudflare D1, Turso) don't allow it**. On the serverless path, stay on Rung 1

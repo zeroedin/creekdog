@@ -13,8 +13,9 @@ Creekdog is a **flagship model**, not a peer-to-peer mesh.
 - **Peer = a watershed group's node**, participating in the federation as either a
   **self-hosted** install or a **colocated** tenant on the flagship. Both federate
   the same way: by publishing the standard contract.
-- **Friends of Deckers Creek (FODC) = peer #1** — origin of the original tool and
-  the pilot that proves the model.
+- **Friends of Deckers Creek (FODC) = peer #1**, running **self-hosted off the
+  flagship** — origin of the original tool and the pilot that proves the model via
+  the real (not colocated) federation path.
 
 This simplifies discovery enormously: a peer **announces itself to the flagship
 registry**; no peer-to-peer discovery is needed. It also unifies with multi-tenancy
@@ -72,9 +73,11 @@ Federation lives in **(publishing contract) + (aggregator)**, not inside every n
   Purely additive; nothing in v1 depends on it.
 
 ## What each install must do (the node contract — v1 sketch)
-- Store reports (Postgres/PostGIS is fine).
+- Store reports (SQLite by default; Postgres/PostGIS optional — `hosting-and-cost.md`).
 - Assign each report a **stable URL identifier**.
 - Tag each report's category with a term from the **shared vocabulary**.
+- Advertise the **watershed boundary** (GeoJSON polygon) as node metadata — its
+  geographic *coverage*, so the flagship can place it and reason about overlap.
 - **Publish** verified reports as **JSON-LD**, discoverable via a documented feed
   (e.g. a paginated collection endpoint) so an aggregator can harvest them.
 
@@ -85,7 +88,9 @@ That's it. A node is simple; publishing correctly is what makes it federatable.
   watersheds propose additions? (Flagship model → creekdog.org likely curates.)
 - **Registry mechanics:** how does a peer register with the flagship, and what does
   the flagship store about it (URL, contact, harvest schedule, trust level)?
-- **FODC onboarding:** does peer #1 start **colocated** on the flagship or
-  **self-hosted**? (Colocated is the faster pilot.)
+- **FODC onboarding — DECIDED: self-hosted.** FODC runs a **self-hosted, off-flagship
+  node** as the reference peer, so its publish → flagship-harvest path is the real
+  end-to-end federation test (a colocated peer wouldn't exercise federation).
+  Colocation remains the default for capacity-poor *other* groups.
 - How much data is public vs. held back (reporter identity always private; sensitive
   locations possibly coarsened before publishing).
