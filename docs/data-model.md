@@ -45,13 +45,17 @@ Creekdog ships **no default categories.** Each watershed defines its own
 **category → routing-agency relationship** (see `agency-routing.md`): every
 category a watershed creates carries the decision of which agency it routes to.
 
+A local category carries three things — label (local), `routesTo` (routing), and
+`broadMatch` (federation mapping to the shared core). See `vocabulary.md`.
+
 ```jsonc
 {
   "@type": "skos:Concept",
-  "id": "cd:illegal-dump",        // watershed-defined
-  "prefLabel": "Illegal dump",
-  "inScheme": "deckers-creek/categories",
-  "routesTo": ["agency:wv-dep"]   // the relationship that matters
+  "id": "https://creekdog.org/w/deckers-creek/category/orange-water",
+  "prefLabel": "Orange water / iron staining",              // local, citizen-facing
+  "inScheme": "https://creekdog.org/w/deckers-creek/categories/",
+  "routesTo": ["https://creekdog.org/agency/wv-dep"],        // routing (local decision)
+  "broadMatch": "https://creekdog.org/vocab/concern/mining"  // → shared core (federation)
 }
 ```
 
