@@ -56,6 +56,28 @@ submissions, watershed-owned data, moderation queues, agency routing).
 Postgres/PostGIS as the operational store **+ RDF/SPARQL export** as the canonical
 interoperable record. Best of both; more moving parts. Natural later evolution.
 
+## "Heavier ops" — what that actually means
+"Ops" = everything after the code is written: **installing, running, backing up,
+upgrading, and troubleshooting** the live system, for years, often by a small
+nonprofit or a volunteer. "Lightweight / easy to install" is an ops statement, and
+it's where the paths diverge most.
+
+| Ops dimension | Solid-pure (CSS + triplestore + app) | Pragmatic (API + Postgres/PostGIS, or SQLite) |
+|---|---|---|
+| Services to run | ~3 (CSS is storage only — you still build the app layer) | 1–2 |
+| Install difficulty | High (Components.js DI config, JVM triplestore, wiring) | Low (compose file / single binary) |
+| Footprint | JVM triplestore wants real RAM | Small; SQLite ≈ nothing |
+| Backups | Two stores kept consistent | One database dump |
+| Upgrades | 3 moving projects; Solid/LWS spec still evolving | Mainstream, predictable |
+| Hosting / community | Niche; few managed options | Universal; managed everywhere |
+| Who can realistically run it | Someone technical | A volunteer with a VPS |
+
+The extra weight buys **Solid-protocol interop + data portability**. But note: the
+*data* is fully standards-compliant Linked Data (JSON-LD, correct vocabularies) on
+**either** path — heavier ops only buys Solid *protocol/server* conformance, not
+data compliance. Net tension: the Solid-pure path is hardest for exactly the small,
+volunteer-run groups Creekdog most wants to enable.
+
 ## Recommendation
 Given small-org scale, a **map-centric** app, anonymous writes, real business logic
 (routing/moderation), and contributor accessibility:
