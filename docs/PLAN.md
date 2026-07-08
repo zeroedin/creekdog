@@ -165,3 +165,6 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | v1 vertical slice = **pollution incident report + agency routing** (not lab chemistry). |
 | 2026-07-08 | Offline handled by future native apps; web v1 online-only but schema offline-aware. |
 | 2026-07-08 | Standards right-sized: JSON-LD + schema.org + GeoJSON + SKOS for citizen reports; SOSA/Darwin Core reserved for later monitoring module. |
+| 2026-07-08 | **No pre-seeded categories.** Each watershed defines its own; the first-class relationship is category → routing-agency. See `agency-routing.md`. |
+| 2026-07-08 | Routing = two layers: per-watershed map (category→agency) + per-agency delivery adapter (manual/email/prefilled-form/open311/webhook), with a staff approval gate before any outbound send. |
+| _pending_ | **Backend fork open:** lean Solid-compatible API + Postgres/PostGIS (recommended) vs. Community Solid Server + triplestore (Solid-pure). See `backend-options.md`. |

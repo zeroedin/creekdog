@@ -39,13 +39,21 @@ A citizen's concern report. Keep it small.
 }
 ```
 
-### Report categories (SKOS, per-watershed, extensible)
-Seed set from the original CreekDog:
-`illegal-dump`, `untreated-sewage`, `suspicious-drilling`,
-`dredge-and-fill`, `other-concern`.
+### Report categories (SKOS, per-watershed — NOT pre-seeded)
+Creekdog ships **no default categories.** Each watershed defines its own
+`ConceptScheme`. The first-class thing is not the label but the
+**category → routing-agency relationship** (see `agency-routing.md`): every
+category a watershed creates carries the decision of which agency it routes to.
 
-Each watershed owns its `ConceptScheme`, so a group can add local categories
-(e.g. `acid-mine-drainage`) without a code change.
+```jsonc
+{
+  "@type": "skos:Concept",
+  "id": "cd:illegal-dump",        // watershed-defined
+  "prefLabel": "Illegal dump",
+  "inScheme": "deckers-creek/categories",
+  "routesTo": ["agency:wv-dep"]   // the relationship that matters
+}
+```
 
 ## Second type: `FishCatch` (v2)
 
