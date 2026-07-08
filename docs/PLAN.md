@@ -178,9 +178,10 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
   (email/webhook). Web Components frontend (Lit). Public read API.
 - **Phase 2 — Federation proof (FODC self-hosted).** *Federation is the core value,
   so prove it early.* Stand up **FODC as a self-hosted, off-flagship node** using
-  SpatiaLite for its boundary; it publishes the **node contract** (verified reports
-  + coverage boundary as JSON-LD); the **flagship harvests** it into the aggregate
-  cross-watershed view. Real external peer = the real end-to-end test of the thesis.
+  SpatiaLite for its boundary; it publishes the **node contract** (`node-contract.md`:
+  descriptor + paged reports feed + report resources); the **flagship harvests** it
+  into the aggregate cross-watershed view. Real external peer = the real end-to-end
+  test of the thesis.
 - **Phase 3 — Multi-tenancy + fish catches.** Tenant config (categories, routing,
   boundary); second report type (angler fish catch); moderation UI.
 - **Phase 4 — Public API hardening for native apps.** Documented, versioned
@@ -230,3 +231,4 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Two node geo profiles.** *Self-managed* (e.g. FODC) uses **SpatiaLite** (Rung 3) for proper boundary + point-in-polygon, still a single-file simple install; *colocated/serverless* renders the boundary + does app-side point-in-polygon (Rung 1). |
 | 2026-07-08 | **FODC = the self-hosted (off-flagship) reference peer** — the real end-to-end federation test (publish → flagship harvest). Resolves the colocated-vs-self-hosted question for peer #1. Colocation stays the default for capacity-poor *other* groups. |
 | 2026-07-08 | **In-bounds jurisdiction gate is REQUIRED** — point-in-polygon vs. the watershed boundary precedes routing; out-of-bounds = outside the group's jurisdiction. Out-of-bounds reports are **accepted and tagged `out-of-area`** for review (no config knob — strict groups just dismiss them in review). Cheap app-side on any node — does NOT force SpatiaLite. Boundary is a prerequisite to accepting reports. Future: flagship hands misdirected reports to the correct peer. |
+| 2026-07-08 | **Node publishing contract specified** (`node-contract.md`). A node = 3 URLs (descriptor + paged JSON-LD reports feed w/ opaque-cursor incremental harvest + dereferenceable report resources) + registration; flagship harvests via registry + polling. Published = **verified only, PII-stripped**; node resolves `category → concern` and publishes both; versioned by `contractVersion` + `vocabulary`. Plain HTTP + JSON-LD, no triplestore/SPARQL. |

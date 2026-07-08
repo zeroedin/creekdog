@@ -83,6 +83,9 @@ Federation lives in **(publishing contract) + (aggregator)**, not inside every n
 
 That's it. A node is simple; publishing correctly is what makes it federatable.
 
+**The full wire spec — descriptor, paged reports feed, report resource, registration,
+and the flagship harvest loop — is in `node-contract.md`.**
+
 ## Open questions
 - **Vocabulary governance:** who curates the shared core scheme, and how do
   watersheds propose additions? (Flagship model → creekdog.org likely curates.)
