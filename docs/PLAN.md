@@ -3,6 +3,26 @@
 > Status: **first draft**, actively evolving. This is a working plan, not a spec.
 > Last substantive update: 2026-07-08.
 
+## 0. TL;DR — the simple version (read this first)
+
+Creekdog v1 is **one web app + one backend + one database**:
+
+1. Web app (Web Components + Lit): pin a spot on a map, pick a category, describe
+   it, add a photo, submit.
+2. Backend service saves it to **Postgres/PostGIS**.
+3. Staff review each submission (the review *is* the spam filter) and click
+   **approve & send** → it emails the right agency.
+4. Data is published as **JSON-LD** → this is what makes Creekdog *open* and
+   *standards-compliant*. Nothing more is required for either.
+
+**"Open" = MIT code anyone can run + open data in a standard format. That's the
+whole bar.** Solid servers, triplestores, SPARQL, and federation are *deliberately
+deferred* — all remain possible as later add-ons, none blocks v1, and federation is
+a north-star ideal rather than a v1 requirement. Don't let them complicate the
+picture: build the four steps above first.
+
+---
+
 ## 1. What Creekdog is
 
 Creekdog is an **open-source, self-hostable API and datastore for citizen-science
@@ -172,4 +192,5 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | Routing = two layers: per-watershed map (category→agency) + per-agency delivery adapter (manual/email/prefilled-form/open311/webhook), with a staff approval gate before any outbound send. |
 | 2026-07-08 | **Every submission is human-reviewed before delivery** (review = the spam filter; no machine-review layer). Original auto-delivery is replaced. |
 | 2026-07-08 | **Lightweight / easy-to-install** is an explicit goal, reinforcing few-moving-parts choices throughout. |
-| _pending_ | **Backend fork open:** lean Solid-compatible API + Postgres/PostGIS (recommended, and favored by the lightweight goal) vs. Community Solid Server + triplestore (Solid-pure). See `backend-options.md`. |
+| 2026-07-08 | **Backend RESOLVED (simple path):** one backend service + **Postgres/PostGIS**, publishing **JSON-LD**. "Open" and "standards-compliant" are satisfied by MIT code + JSON-LD open data — no Solid server or triplestore required. |
+| 2026-07-08 | **Deferred, non-blocking:** Solid *server*, triplestore, SPARQL endpoint, cross-install **federation**, WebID/Solid-OIDC. All remain possible as later *add-ons*; none is a v1 concern. Federation is a north-star ideal, not a v1 constraint. |
