@@ -66,11 +66,23 @@ it's where the paths diverge most.
 |---|---|---|
 | Services to run | ~3 (CSS is storage only — you still build the app layer) | 1–2 |
 | Install difficulty | High (Components.js DI config, JVM triplestore, wiring) | Low (compose file / single binary) |
-| Footprint | JVM triplestore wants real RAM | Small; SQLite ≈ nothing |
+| Footprint | Modest — modern stack available (see note) | Small; SQLite ≈ nothing |
 | Backups | Two stores kept consistent | One database dump |
 | Upgrades | 3 moving projects; Solid/LWS spec still evolving | Mainstream, predictable |
 | Hosting / community | Niche; few managed options | Universal; managed everywhere |
 | Who can realistically run it | Someone technical | A volunteer with a VPS |
+
+**The Solid path is NOT a legacy/JVM stack** — that was an early mischaracterization.
+CSS is **Node.js/TypeScript**; the JVM only appeared via one triplestore example
+(Apache Jena Fuseki). You can run an all-modern stack: **CSS (Node/TS) + Oxigraph
+(Rust)**, and CSS doesn't strictly require a separate triplestore (pluggable
+filesystem/memory/SPARQL storage). What stays true regardless of how modern the
+pieces are: (1) CSS is **storage only**, so you still build+run a separate app
+service for anon submission / moderation / routing; (2) **Components.js DI config**
+is fiddly; (3) the **Solid/LWS spec is still evolving** (upgrade churn); (4)
+**geo/query still needs bolting on** — even Oxigraph doesn't do GeoSPARQL; (5)
+smaller community / fewer managed hosts. So the real cost is *parts + config + a
+moving spec + weak geo*, not "old runtime."
 
 The extra weight buys **Solid-protocol interop + data portability**. But note: the
 *data* is fully standards-compliant Linked Data (JSON-LD, correct vocabularies) on
