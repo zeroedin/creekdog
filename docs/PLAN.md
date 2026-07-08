@@ -9,7 +9,8 @@ Creekdog v1 is **one web app + one backend + one database**:
 
 1. Web app (Web Components + Lit): pin a spot on a map, pick a category, describe
    it, add a photo, submit.
-2. Backend service saves it to **Postgres/PostGIS**.
+2. Backend service saves it to a small database (**SQLite by default** — a file, no
+   DB server; Postgres/PostGIS optional for large nodes).
 3. Staff review each submission (the review *is* the spam filter) and click
    **approve & send** → it emails the right agency.
 4. Data is published as **JSON-LD** → this is what makes Creekdog *open* and
@@ -210,6 +211,8 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Federation is THE core value proposition** — Creekdog is a network of interoperating watershed nodes. Achieved via the data-*publishing contract* (Linked Data, shared vocab, stable URLs), not via any specific database. See `federation.md`. |
 | 2026-07-08 | **Topology RESOLVED — flagship, not P2P.** creekdog.org = flagship (aggregator + registry + reference install + optional host). Peers = watershed nodes, self-hosted or colocated. **FODC = peer #1.** Discovery = simple registry at the flagship. |
 | 2026-07-08 | **Shared vocabulary is a core artifact.** Local categories (per-watershed wording + routing) each `broadMatch` onto a small, flagship-curated, additive-only **core concern scheme** (~10 concepts, `vocabulary.md`). Local usability + global comparability. Report **status** is a companion shared list. **Core scheme accepted as v0** (additive-only henceforth). |
-| 2026-07-08 | **Backend RESOLVED (simple node):** each install = one backend service + **Postgres/PostGIS**, *publishing JSON-LD as its federation contract*. A node stays simple; it's a full federation citizen by publishing, not by running heavy infra. |
+| 2026-07-08 | **Backend RESOLVED (simple node):** each install = one backend service, *publishing JSON-LD as its federation contract*. A node stays simple; it's a full federation citizen by publishing, not by running heavy infra. |
+| 2026-07-08 | **Storage is a per-node choice; SQLite is the DEFAULT** (a file, no DB server, no bill). Postgres/PostGIS is an **optional upgrade** for large/funded nodes — not required. Revises the earlier "every node runs Postgres" assumption. See `hosting-and-cost.md`. |
+| 2026-07-08 | **Cost model:** most/poor groups **colocate on the flagship and pay $0** (run nothing); self-host lite (SQLite / free-tier serverless) is ~$0–5/mo; real cost concentrates at the **flagship**, funded by consortium + nonprofit cloud credits. Geo at small scale needs no PostGIS (SpatiaLite / bbox math suffices). |
 | 2026-07-08 | **Day-one federation foundation (cheap, required):** (a) stable **URL identifiers** for everything; (b) a **shared core vocabulary** that per-watershed categories map onto. |
 | 2026-07-08 | **Deferred to the aggregator, not each node:** live federated **SPARQL**, triplestores. The aggregator (likely creekdog.org) harvests nodes' published data; individual watersheds never need this. |
