@@ -92,8 +92,11 @@ a local category is effectively identical to a core concept.
 
 ## Open questions
 - Review the core scheme against **FODC's actual categories** — adjust before v0.
-- Should the core be **flat** (as above) or allow a shallow **hierarchy** (e.g.
-  `extractive` → {`mining`, `oil-gas`})? Flat is simpler; hierarchy aids rollups.
+- **Flat vs. hierarchy — DECIDED: flat for v0.** The ~10 concepts stay as a flat
+  list. Parent groupers (e.g. `extractive` → {`mining`, `oil-gas`}) can be added
+  later via `skos:broader` with zero breakage — peers map to leaves, so parents are
+  purely additive. Introduce a shallow hierarchy only if native rollups become
+  painful in the aggregate dashboard.
 - Where do **core URIs** live if a peer self-hosts — always `creekdog.org/vocab`
   (single source of truth), which we recommend, so every node maps to the same anchors.
 - Multi-language `prefLabel`s (SKOS supports language tags) — worth planning for?
