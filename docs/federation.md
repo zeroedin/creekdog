@@ -3,6 +3,24 @@
 > Creekdog is a **network of interoperating watershed installs**, not a set of
 > silos. Federation is the point of the project. This document is therefore central.
 
+## Topology (resolved): flagship + peers
+Creekdog is a **flagship model**, not a peer-to-peer mesh.
+
+- **Creekdog (creekdog.org) = the flagship.** It plays several roles at once:
+  the **aggregator** (harvests all peers into one cross-watershed view), the
+  **registry** that peers join, the reference install, and an optional **host** for
+  groups that don't want to self-host.
+- **Peer = a watershed group's node**, participating in the federation as either a
+  **self-hosted** install or a **colocated** tenant on the flagship. Both federate
+  the same way: by publishing the standard contract.
+- **Friends of Deckers Creek (FODC) = peer #1** — origin of the original tool and
+  the pilot that proves the model.
+
+This simplifies discovery enormously: a peer **announces itself to the flagship
+registry**; no peer-to-peer discovery is needed. It also unifies with multi-tenancy
+— the flagship install is multi-tenant (hosts colocated peers) *and* aggregates
+external self-hosted peers into the same view.
+
 ## The core idea
 Federation is **data interoperability**: many independent installs whose data can be
 combined, searched, and compared as if it were one dataset — **without** forcing them
@@ -63,11 +81,11 @@ Federation lives in **(publishing contract) + (aggregator)**, not inside every n
 That's it. A node is simple; publishing correctly is what makes it federatable.
 
 ## Open questions
-- Is Creekdog **one flagship aggregator (creekdog.org) others join**, or a **fully
-  peer-to-peer** mesh with no center? (Affects governance + discovery.)
 - **Vocabulary governance:** who curates the shared core scheme, and how do
-  watersheds propose additions?
-- **Node discovery:** how does the aggregator learn a new node exists? (Registry vs.
-  manual list vs. self-announcement.)
+  watersheds propose additions? (Flagship model → creekdog.org likely curates.)
+- **Registry mechanics:** how does a peer register with the flagship, and what does
+  the flagship store about it (URL, contact, harvest schedule, trust level)?
+- **FODC onboarding:** does peer #1 start **colocated** on the flagship or
+  **self-hosted**? (Colocated is the faster pilot.)
 - How much data is public vs. held back (reporter identity always private; sensitive
   locations possibly coarsened before publishing).

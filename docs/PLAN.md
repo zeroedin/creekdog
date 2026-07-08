@@ -84,7 +84,9 @@ through a consortium.
 |---|---|---|
 | **Citizen reporter** | Submits reports/observations over the plain web. Often anonymous. | None required (optional contact for follow-up) |
 | **Watershed group (tenant)** | Owns and stewards the data space ("the pod"). Configures categories, agency routing, map. Reviews/verifies reports. | Authenticated (org accounts) |
-| **Host / operator** | Runs the install; may host one or many watershed groups. Could be an individual, an org, or a consortium. | Server admin |
+| **Host / operator** | Runs an install; may host one or many watershed groups. Could be an individual, an org, or a consortium. | Server admin |
+| **Flagship (creekdog.org)** | The aggregator + registry + reference install + optional host for colocated peers. | Project operator (Steven) |
+| **Peer** | A watershed group's node in the federation — self-hosted or colocated. **FODC = peer #1.** | Per-node |
 
 **Key decision:** the **data steward is the watershed group, not the individual
 citizen.** Citizens interact through the web and are frequently anonymous, so we do
@@ -206,6 +208,7 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Every submission is human-reviewed before delivery** (review = the spam filter; no machine-review layer). Original auto-delivery is replaced. |
 | 2026-07-08 | **Lightweight / easy-to-install** is an explicit goal, reinforcing few-moving-parts choices throughout. |
 | 2026-07-08 | **Federation is THE core value proposition** — Creekdog is a network of interoperating watershed nodes. Achieved via the data-*publishing contract* (Linked Data, shared vocab, stable URLs), not via any specific database. See `federation.md`. |
+| 2026-07-08 | **Topology RESOLVED — flagship, not P2P.** creekdog.org = flagship (aggregator + registry + reference install + optional host). Peers = watershed nodes, self-hosted or colocated. **FODC = peer #1.** Discovery = simple registry at the flagship. |
 | 2026-07-08 | **Backend RESOLVED (simple node):** each install = one backend service + **Postgres/PostGIS**, *publishing JSON-LD as its federation contract*. A node stays simple; it's a full federation citizen by publishing, not by running heavy infra. |
 | 2026-07-08 | **Day-one federation foundation (cheap, required):** (a) stable **URL identifiers** for everything; (b) a **shared core vocabulary** that per-watershed categories map onto. |
 | 2026-07-08 | **Deferred to the aggregator, not each node:** live federated **SPARQL**, triplestores. The aggregator (likely creekdog.org) harvests nodes' published data; individual watersheds never need this. |
