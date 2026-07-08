@@ -45,9 +45,27 @@ controlled, and federation-native (published files *are* the contract). Weaker a
 querying/geo, but fine at this scale. An option, not the default.
 
 ## Geospatial is not a blocker for cheap nodes
-PostGIS power is only needed at scale. At a few hundred points, geo filtering is
-trivial: SQLite's **SpatiaLite** extension, or plain bounding-box math, is enough.
-PostGIS is a nice-to-have for the well-funded **flagship**, not a small-node need.
+PostGIS power is only needed at scale. A node climbs this ladder only as far as it
+needs — and Rung 1 alone is enough for v1 at watershed scale.
+
+| Rung | Capability | Needs | Runs where |
+|---|---|---|---|
+| **1. Naive** | lat/lon columns, bbox `WHERE`, Haversine distance, app-side point-in-polygon | nothing | **everywhere**, incl. serverless |
+| **2. + R\*Tree** | fast bbox/viewport via SQLite's built-in R\*Tree index | standard SQLite | almost everywhere |
+| **3. SpatiaLite** | full OGC GIS — boundaries, jurisdiction point-in-polygon, projections, HUC/GeoJSON import | native extension | VPS / Docker / local |
+| **4. PostGIS** | everything, at scale | Postgres server | flagship / funded nodes |
+
+**Baseline = Rung 1** — runs literally anywhere (including the $0 serverless path)
+and is plenty at a few hundred points. **SpatiaLite (Rung 3)** is "PostGIS for
+SQLite": real GIS in a single file, no server — the upgrade a *self-hosted* node
+reaches for to get **watershed-boundary** and **jurisdiction-routing** point-in-
+polygon queries (see `agency-routing.md`) without running Postgres.
+
+**SpatiaLite caveat:** it's a *native extension*, so it needs a runtime that allows
+loading extensions — fine on VPS/Docker, but **many serverless SQLite platforms
+(e.g. Cloudflare D1, Turso) don't allow it**. On the serverless path, stay on Rung 1
+(lat/lon math). So SpatiaLite is a **self-hosted-only** capability, not a serverless
+one. The **flagship** likely runs **PostGIS** since it aggregates all peers.
 
 ## Where cost concentrates — and how it's paid
 The only node needing real capacity is the **flagship** (it aggregates all peers and

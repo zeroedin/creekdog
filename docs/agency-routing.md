@@ -81,7 +81,9 @@ reporter: "your report was forwarded to X on DATE, case #NNN."
 
 ## Open questions
 - How is **jurisdiction** determined per watershed — static table, or spatial lookup
-  against agency service-area boundaries?
+  against agency service-area boundaries? (Spatial version = point-in-polygon; needs
+  Rung-3 SpatiaLite or Rung-4 PostGIS — see `hosting-and-cost.md`. Static table works
+  on any node, incl. serverless.)
 - Do we need **escalation** (no acknowledgement in N days → notify next party)?
 - Where do agency **credentials** (API keys, form quirks) live and who maintains them?
 - Should reporters be able to **opt in to status updates** while staying anonymous
