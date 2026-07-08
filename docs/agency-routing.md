@@ -18,12 +18,11 @@ handle*. So the first check on submission is **point-in-polygon against the wate
 boundary**:
 
 - **In-bounds** → continue to routing below.
-- **Out-of-bounds** → outside the group's jurisdiction. Handle per a **per-watershed
-  policy**:
-  - `reject` — hard block at submission.
-  - `flag` *(recommended default)* — accept but tag **out-of-area** so the human
-    reviewer decides (the boundary check becomes an input to review, not a silent wall).
-  - `accept` — no gating.
+- **Out-of-bounds** → **accept, but tag `out-of-area`** so the human reviewer
+  decides (dismiss, or handle anyway). The boundary check is an *input to review*,
+  not a silent wall or a hard block. No per-watershed config knob: a strict group
+  simply dismisses out-of-area reports in review, which the mandatory review step
+  already covers.
 
 This gate is *one point vs one polygon per submission* — cheap in app code on any
 node (no SpatiaLite required; see `hosting-and-cost.md`). Defining the watershed

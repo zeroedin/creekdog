@@ -161,9 +161,9 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
   challenge, moderation queue) without forcing accounts.
 - Reports have a **lifecycle**: `submitted → triaged → routed → verified/closed`.
 - **In-bounds jurisdiction gate** (before routing): point-in-polygon vs. the
-  watershed boundary. Out-of-bounds reports are outside the group's jurisdiction;
-  policy is per-watershed (`reject | flag | accept`, default `flag`). Cheap app-side
-  check on any node. See `agency-routing.md`.
+  watershed boundary. Out-of-bounds reports are **accepted and tagged `out-of-area`**
+  for the reviewer to dismiss or handle (no config knob — review already covers the
+  strict case). Cheap app-side check on any node. See `agency-routing.md`.
 - Only **verified** data enters the public scientific feed; raw submissions stay
   in a moderation view.
 
@@ -229,4 +229,4 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Watershed boundary is first-class.** Each watershed/peer has a boundary polygon (HUC-sourced or custom): defines coverage, validates/labels reports (in-bounds, sub-HUC), drives the map — **and is published as node metadata** so the flagship maps coverage/overlap. |
 | 2026-07-08 | **Two node geo profiles.** *Self-managed* (e.g. FODC) uses **SpatiaLite** (Rung 3) for proper boundary + point-in-polygon, still a single-file simple install; *colocated/serverless* renders the boundary + does app-side point-in-polygon (Rung 1). |
 | 2026-07-08 | **FODC = the self-hosted (off-flagship) reference peer** — the real end-to-end federation test (publish → flagship harvest). Resolves the colocated-vs-self-hosted question for peer #1. Colocation stays the default for capacity-poor *other* groups. |
-| 2026-07-08 | **In-bounds jurisdiction gate is REQUIRED** — point-in-polygon vs. the watershed boundary precedes routing; out-of-bounds = outside the group's jurisdiction. Per-watershed policy `reject | flag | accept` (default `flag`). Cheap app-side on any node — does NOT force SpatiaLite. Boundary is a prerequisite to accepting reports. Future: flagship hands misdirected reports to the correct peer. |
+| 2026-07-08 | **In-bounds jurisdiction gate is REQUIRED** — point-in-polygon vs. the watershed boundary precedes routing; out-of-bounds = outside the group's jurisdiction. Out-of-bounds reports are **accepted and tagged `out-of-area`** for review (no config knob — strict groups just dismiss them in review). Cheap app-side on any node — does NOT force SpatiaLite. Boundary is a prerequisite to accepting reports. Future: flagship hands misdirected reports to the correct peer. |
