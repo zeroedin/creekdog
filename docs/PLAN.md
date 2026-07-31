@@ -132,17 +132,27 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 
 ## 5. Standards stack (right-sized)
 
-**Citizen report / fish catch (v1–v2):**
-- **JSON-LD** wire format.
-- **schema.org** for general, discoverable properties + web crawlability.
-- **GeoJSON** (+ WGS84 Geo) for location — friendlier than GeoSPARQL for points.
-- **Per-watershed SKOS concept scheme** for report categories (illegal dump,
-  sewage, …) — extensible per tenant.
-- **PROV-O / Dublin Core** (light) for provenance: who/when/verified-by.
+> **Scope discipline:** Creekdog models **only what it actually collects, in its own
+> terms.** We do *not* map every field onto external ontologies — that is ceremony
+> with no payoff here. The **only** thing that must be shared and curated is the
+> **core concern list** (`vocabulary.md`), because that is what makes cross-watershed
+> queries meaningful. Everything else is Creekdog's own small, flat field set.
 
-**Structured monitoring module (later):**
-- **SOSA/SSN** for water-chemistry observations, **QUDT** for units.
-- **Darwin Core** for fish/macroinvertebrate occurrences → **GBIF** export.
+**Citizen report (v1):**
+- **JSON-LD** wire format, over a **small Creekdog-owned `@context`** that mostly
+  names our own fields.
+- **SKOS** for the category/concern machinery — the one place a standard vocabulary
+  genuinely earns its place (federation depends on it).
+- **GeoJSON** for geometry — see below.
+
+**Geometry is deliberately tiny:**
+- **Report location = a lat/long point.** Nothing else.
+- **Watershed boundary = the only non-point geometry**, uploaded once at tenant
+  setup (not per report). Accept **KML or GeoJSON**; convert and **store GeoJSON**.
+
+**Later modules only (not v1, do not pre-build):**
+- Fish catches → **Darwin Core** for GBIF export.
+- Structured monitoring → **SOSA/SSN + QUDT**, EPA WQX export.
 - US watershed identity via **USGS HUC** codes.
 
 ## 6. Multi-tenancy, hosting & consortium
@@ -193,18 +203,25 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 
 ## 9. Open questions
 
-1. **Server/runtime:** adopt Community Solid Server, or build a lean custom
-   Solid-compatible API (more control, less standards surface for free)?
-2. **Storage engine:** RDF quad store (e.g. for native Linked Data) vs. a
-   conventional DB with a JSON-LD mapping layer. Trade-off: purity vs. ops ease.
-3. **Staff identity:** WebID + Solid-OIDC (pure) vs. email/passkey (easier
-   onboarding) vs. both.
-4. **Agency routing:** how are agencies + jurisdictions modeled per watershed?
-   Static config table first; geospatial jurisdiction lookup later?
-5. **Data licensing:** CC0 vs CC-BY for the public scientific record.
-6. **Consortium governance:** legal/financial structure for shared hosting.
-7. **Map tooling:** Leaflet (framework-agnostic lib) vs. another approach for
-   picking/showing locations, within the "no framework" spirit.
+*(Resolved and moved to the decisions log: server/runtime, storage engine, staff
+identity, data licensing, report fields, geometry, data migration.)*
+
+1. **`@context` + validation shape.** Author the small Creekdog-owned context and a
+   **JSON Schema** so nodes self-validate their published output. (SHACL optional,
+   flagship-side only — likely unnecessary; a couple of lines of flagship code can
+   check that `concern` is a real core concept.)
+2. **Agency routing:** how are agencies + jurisdictions modeled per watershed?
+   Static config table first; geospatial jurisdiction lookup later.
+3. **Photo hosting:** served from the node vs. copied/cached by the flagship
+   (link rot if a node disappears).
+4. **Registration auth:** how the flagship verifies a registrant controls the node
+   domain (e.g. a challenge file), to prevent spoofed nodes.
+5. **Consortium governance:** legal/financial structure for shared hosting.
+6. **Map tooling:** Leaflet is the lean (framework-agnostic, no API key or billing
+   account — matters for $0 hosting); confirm before Phase 1.
+7. **creekdog.org migration:** retire the defunct Vue app + fix the broken
+   `gh-pages` deploy workflow (it currently nests `…temp-deployment-folder/`
+   directories); decide what the domain serves during the rebuild.
 
 ## 10. Decisions log
 
@@ -231,4 +248,11 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 | 2026-07-08 | **Two node geo profiles.** *Self-managed* (e.g. FODC) uses **SpatiaLite** (Rung 3) for proper boundary + point-in-polygon, still a single-file simple install; *colocated/serverless* renders the boundary + does app-side point-in-polygon (Rung 1). |
 | 2026-07-08 | **FODC = the self-hosted (off-flagship) reference peer** — the real end-to-end federation test (publish → flagship harvest). Resolves the colocated-vs-self-hosted question for peer #1. Colocation stays the default for capacity-poor *other* groups. |
 | 2026-07-08 | **In-bounds jurisdiction gate is REQUIRED** — point-in-polygon vs. the watershed boundary precedes routing; out-of-bounds = outside the group's jurisdiction. Out-of-bounds reports are **accepted and tagged `out-of-area`** for review (no config knob — strict groups just dismiss them in review). Cheap app-side on any node — does NOT force SpatiaLite. Boundary is a prerequisite to accepting reports. Future: flagship hands misdirected reports to the correct peer. |
+| 2026-07-08 | **Scope discipline:** model **only what Creekdog collects, in its own terms** — no forcing external ontologies onto our fields. The **core concern list is the only shared/curated vocabulary** (that's what federation needs). Shrinks the `@context` to mostly our own terms. |
+| 2026-07-08 | **Report = five citizen-supplied fields:** category, location (lat/long point), description, photo, optional contact. Expandable later. Everything else is system-managed. |
+| 2026-07-08 | **Geometry is tiny:** report location is a **lat/long point only**; the **watershed boundary is the sole non-point geometry**, uploaded once at tenant setup. Accept **KML or GeoJSON**, convert and **store GeoJSON** (Leaflet/modern maps consume it natively; not locked to Google Maps). |
+| 2026-07-08 | **Runtime = Node.js/TypeScript** — one language across backend and the Lit frontend; largest web contributor pool; deploys anywhere incl. serverless free tiers. |
+| 2026-07-08 | **Published data license = CC-BY** — free reuse with attribution to the watershed group. (Code stays MIT.) Recorded in each node's descriptor. |
+| 2026-07-08 | **Staff auth (admin side only; citizens never log in):** **password set at account creation** as the baseline, with **optional magic-link and passkey** sign-in and **TOTP 2FA** available. Rejects WebID/Solid-OIDC for now — full cost, no benefit, since staff log into exactly one app and there are no per-citizen pods. Additive later if wanted. |
+| 2026-07-08 | **No data migration — fresh start.** The new system begins empty; the old closed-source Creekdog data stays archived. No importer needed in Phase 1. |
 | 2026-07-08 | **Node publishing contract specified** (`node-contract.md`). A node = 3 URLs (descriptor + paged JSON-LD reports feed w/ opaque-cursor incremental harvest + dereferenceable report resources) + registration; flagship harvests via registry + polling. Published = **verified only, PII-stripped**; node resolves `category → concern` and publishes both; versioned by `contractVersion` + `vocabulary`. Plain HTTP + JSON-LD, no triplestore/SPARQL. |

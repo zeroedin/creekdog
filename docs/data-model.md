@@ -10,34 +10,36 @@
 
 ## Core type: `PollutionReport` (v1)
 
-A citizen's concern report. Keep it small.
+**The citizen fills in exactly five things** (confirmed against the real tool;
+expandable later): **category, location, description, photo, optional contact.**
+Everything else below is system-managed. Model only what we collect — no external
+ontology mapping (see `PLAN.md` §5).
 
 ```jsonc
 {
   "@context": "https://creekdog.org/context/v1.jsonld",
   "@type": "PollutionReport",
-  "id": "urn:uuid:9f1c...   ",          // client-generated (UUID/ULID), offline-safe
-  "watershed": "deckers-creek",          // tenant
-  "category": "cd:illegal-dump",         // SKOS concept (per-watershed scheme)
+
+  // ── citizen-supplied (the whole form) ───────────────────────────────
+  "category": "https://fodc.example/category/illegal-dump",  // watershed's own list
+  "location": { "type": "Point", "coordinates": [-79.9553, 39.6295] },  // lat/long point
   "description": "Tires and drums dumped at the bank.",
-  "location": {                          // GeoJSON Point
-    "type": "Point",
-    "coordinates": [-79.9553, 39.6295]   // [lon, lat]
-  },
-  "observedAt": "2026-07-08T14:12:00Z",  // when the citizen saw it
+  "photos": ["https://fodc.example/reports/123/photo/1.jpg"],
+  "reporter": { "contact": "steven@example.org" },  // OPTIONAL; omit = anonymous
+
+  // ── system-managed ─────────────────────────────────────────────────
+  "id": "urn:uuid:9f1c…",                // client-generated (UUID/ULID), offline-safe
+  "watershed": "https://fodc.example/",  // tenant
+  "observedAt": "2026-07-08T14:12:00Z",  // capture time (offline-aware)
   "submittedAt": "2026-07-08T14:20:00Z",
-  "photos": ["https://.../evidence/1.jpg"],
-  "reporter": {                          // optional; omit for anonymous
-    "contact": "steven@example.org",
-    "consentToContact": true
-  },
-  "status": "submitted",                 // submitted|triaged|routed|verified|closed
-  "routing": {                           // filled by the routing engine
-    "agency": null,
-    "notifiedAt": null
-  }
+  "status": "submitted",                 // submitted|triaged|routed|verified|closed|rejected
+  "outOfArea": false,                    // set by the in-bounds gate (agency-routing.md)
+  "routing": { "agency": null, "notifiedAt": null }
 }
 ```
+
+`location` is only ever a **lat/long point** — the watershed boundary is the sole
+non-point geometry in the system, and it lives on the `Watershed`, not the report.
 
 ### Report categories (SKOS, per-watershed — NOT pre-seeded)
 Creekdog ships **no default categories.** Each watershed defines its own
@@ -72,8 +74,8 @@ node metadata** (its geographic coverage in the federation — see `federation.m
   "name": "Deckers Creek",
   "huc": "05020004",                          // USGS Hydrologic Unit Code (optional)
   "boundary": {                               // GeoJSON Polygon — published as coverage
-    "type": "Polygon",
-    "coordinates": [ [ [-79.99,39.60], [-79.90,39.60], /* … */ ] ]
+    "type": "Polygon",                        // uploaded as KML *or* GeoJSON at setup,
+    "coordinates": [ [ [-79.99,39.60], [-79.90,39.60], /* … */ ] ]  // stored as GeoJSON
   },
   "categoryScheme": "https://fodc.example/categories/",
   "agencies": ["https://creekdog.org/agency/wv-dep"]
