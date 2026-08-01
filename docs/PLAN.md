@@ -137,6 +137,26 @@ but we adopt it **pragmatically, not literally**:
 
 All of it remains addable later as an additive layer; nothing here forecloses it.
 
+**Be precise about the claim:** what we kept isn't really *Solid* — it's Linked Data
+and web-architecture fundamentals that predate Solid and that Solid is built *on*. So
+Creekdog is **Solid-influenced, not Solid-based.** That instinct led somewhere good:
+stable URLs and openly published Linked Data are exactly what federation needs.
+
+**Where Solid could genuinely return:**
+1. **If citizens should own their reports.** Solid's real value is *individuals*
+   owning data in personal pods. We decided the watershed group is the steward — a
+   decision, not a law. If Creekdog ever wants named citizen-scientists who own their
+   contributions and carry them between watersheds, pods stop being ceremony.
+2. **As an optional storage backend** — a node could write to a pod instead of SQLite.
+   Purely additive.
+3. **If LWS matures into wide adoption** — we're well positioned, since our data is
+   already JSON-LD at stable URLs.
+
+**Note the sovereignty goal is still met, at a different level:** watershed groups own
+their data, can self-host, and everything is published openly under CC-BY —
+*organizational* sovereignty rather than individual, which fits a system whose
+contributors are mostly anonymous and don't want accounts.
+
 ## 5. Standards stack (right-sized)
 
 > **Scope discipline:** Creekdog models **only what it actually collects, in its own
@@ -196,7 +216,10 @@ All of it remains addable later as an additive layer; nothing here forecloses it
   contact) → stored as JSON-LD → public verified feed → basic agency-routing
   (email/webhook). Web Components frontend (Lit). Public read API.
 - **Phase 2 — Federation proof (FODC self-hosted).** *Federation is the core value,
-  so prove it early.* Stand up **FODC as a self-hosted, off-flagship node** using
+  so prove it early.* Build the **conformance test suite** first (point it at a node
+  URL → validates the whole contract), then the **aggregator** (harvest storage,
+  dedup, cross-watershed map) and the **registry** (+ domain anti-spoofing).
+  Known gaps tracked in `federation-gaps.md`. Stand up **FODC as a self-hosted, off-flagship node** using
   SpatiaLite for its boundary; it publishes the **node contract** (`node-contract.md`:
   descriptor + paged reports feed + report resources); the **flagship harvests** it
   into the aggregate cross-watershed view. Real external peer = the real end-to-end
@@ -217,15 +240,14 @@ identity, data licensing, report fields, geometry, data migration.)*
 
 *(Also done: `@context` + JSON Schema — see `spec/`; agency selection — reviewer-chosen.)*
 
-1. **Flagship photo caching:** the node stores and serves its own photos (decided);
-   still open is whether the **flagship copies them** when harvesting, or hot-links
-   the node and risks link rot if a peer disappears.
-2. **Registration auth:** how the flagship verifies a registrant controls the node
-   domain (e.g. a challenge file), to prevent spoofed nodes.
-3. **Consortium governance:** legal/financial structure for shared hosting.
-4. **Validate the $0 serverless recipe** — with Prisma chosen, confirm a working
+1. **Federation gaps** — the contract is unvalidated, the aggregator side is thin,
+   and registry/versioning/vocabulary-governance are undefined. Fully audited with
+   work items in **`federation-gaps.md`**; highest-value next step is a
+   **conformance test suite**.
+2. **Consortium governance:** legal/financial structure for shared hosting.
+3. **Validate the $0 serverless recipe** — with Prisma chosen, confirm a working
    free-tier Node-runtime host + Neon/SQLite combination end to end.
-5. **Address geocoding** — if citizens should *search an address* rather than drop a
+4. **Address geocoding** — if citizens should *search an address* rather than drop a
    pin, free geocoders (OSM Nominatim) have usage limits and Google's is notably
    better. Pin-drop + device GPS likely covers the real "I'm standing at the creek"
    case; decide whether search is needed at all.
