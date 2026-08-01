@@ -206,22 +206,20 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 *(Resolved and moved to the decisions log: server/runtime, storage engine, staff
 identity, data licensing, report fields, geometry, data migration.)*
 
-1. **`@context` + validation shape.** Author the small Creekdog-owned context and a
-   **JSON Schema** so nodes self-validate their published output. (SHACL optional,
-   flagship-side only — likely unnecessary; a couple of lines of flagship code can
-   check that `concern` is a real core concept.)
-2. **Agency routing:** how are agencies + jurisdictions modeled per watershed?
+*(Also done: `@context` + JSON Schema — see `spec/`.)*
+
+1. **Agency routing:** how are agencies + jurisdictions modeled per watershed?
    Static config table first; geospatial jurisdiction lookup later.
-3. **Photo hosting:** served from the node vs. copied/cached by the flagship
+2. **Photo hosting:** served from the node vs. copied/cached by the flagship
    (link rot if a node disappears).
-4. **Registration auth:** how the flagship verifies a registrant controls the node
+3. **Registration auth:** how the flagship verifies a registrant controls the node
    domain (e.g. a challenge file), to prevent spoofed nodes.
-5. **Consortium governance:** legal/financial structure for shared hosting.
-6. **Address geocoding** — if citizens should *search an address* rather than drop a
+4. **Consortium governance:** legal/financial structure for shared hosting.
+5. **Address geocoding** — if citizens should *search an address* rather than drop a
    pin, free geocoders (OSM Nominatim) have usage limits and Google's is notably
    better. Pin-drop + device GPS likely covers the real "I'm standing at the creek"
    case; decide whether search is needed at all.
-7. **creekdog.org migration:** retire the defunct Vue app + fix the broken
+6. **creekdog.org migration:** retire the defunct Vue app + fix the broken
    `gh-pages` deploy workflow (it currently nests `…temp-deployment-folder/`
    directories); decide what the domain serves during the rebuild.
 

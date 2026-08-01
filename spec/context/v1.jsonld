@@ -1,0 +1,49 @@
+{
+  "@context": {
+    "@version": 1.1,
+
+    "cd": "https://creekdog.org/vocab#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "id": "@id",
+    "type": "@type",
+
+    "CreekdogNode": "cd:CreekdogNode",
+    "Watershed": "cd:Watershed",
+    "PollutionReport": "cd:PollutionReport",
+    "RemovedReport": "cd:RemovedReport",
+    "Collection": "cd:Collection",
+
+    "contractVersion": "cd:contractVersion",
+    "vocabulary": { "@id": "cd:vocabulary", "@type": "@id" },
+    "categoryScheme": { "@id": "cd:categoryScheme", "@type": "@id" },
+    "reports": { "@id": "cd:reports", "@type": "@id" },
+    "license": { "@id": "cd:license", "@type": "@id" },
+    "publisher": "cd:publisher",
+    "name": "cd:name",
+    "url": { "@id": "cd:url", "@type": "@id" },
+    "updated": { "@id": "cd:updated", "@type": "xsd:dateTime" },
+
+    "watershed": { "@id": "cd:watershed", "@type": "@id" },
+    "huc": "cd:huc",
+    "boundary": { "@id": "cd:boundary", "@type": "@json" },
+
+    "category": { "@id": "cd:category", "@type": "@id" },
+    "concern": { "@id": "cd:concern", "@type": "@id" },
+    "description": "cd:description",
+    "location": { "@id": "cd:location", "@type": "@json" },
+    "photos": { "@id": "cd:photos", "@type": "@id", "@container": "@set" },
+    "observedAt": { "@id": "cd:observedAt", "@type": "xsd:dateTime" },
+    "modified": { "@id": "cd:modified", "@type": "xsd:dateTime" },
+
+    "items": { "@id": "cd:items", "@container": "@set" },
+    "next": { "@id": "cd:next", "@type": "@id" },
+    "nextSync": "cd:nextSync",
+    "orderedBy": "cd:orderedBy",
+
+    "prefLabel": "skos:prefLabel",
+    "inScheme": { "@id": "skos:inScheme", "@type": "@id" },
+    "broadMatch": { "@id": "skos:broadMatch", "@type": "@id" }
+  }
+}

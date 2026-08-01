@@ -177,8 +177,8 @@ optimization that doesn't change the feed format.
 ---
 
 ## Open items
-- Author the **`@context`** document and a **JSON Schema / SHACL** shape so nodes can
-  self-validate their output.
+- ~~Author the **`@context`** and a validation shape~~ — **DONE**, see `spec/`
+  (`context/v1.jsonld`, `schema/node-v1.schema.json`). SHACL deliberately skipped.
 - Decide default **harvest poll interval** (and whether the descriptor advertises a
   suggested one).
 - **Photo hosting**: inline URLs on the node vs. copied by the flagship (link rot if a
