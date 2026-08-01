@@ -91,6 +91,20 @@ one. The **flagship** likely runs **PostGIS** since it aggregates all peers.
 - **Resize/recompress** to web size. A ~12 MB phone photo becomes ~300 KB — roughly
   40× smaller, which makes every storage option cheap.
 
+**Lifecycle — photos are private until the report is accepted:**
+1. **Uploaded / pending review** — stored but **not publicly served**. Visible to
+   staff in the review queue only; access is **enforced by the server**, never by an
+   unguessable URL. On the `s3` adapter this means objects are **private by default**
+   (no public-read ACL), served via the app or a signed URL.
+2. **Accepted & published** — the photo becomes public at its stable URL and appears
+   in the published report.
+3. **Rejected** — the report **and its files are deleted**: original plus every
+   resized derivative, including from object storage.
+
+**Orphaned uploads.** A citizen may attach a photo and then abandon the form. Those
+files need a periodic **sweep** (delete unattached uploads older than N hours) or they
+accumulate indefinitely — a real abuse vector on an anonymous endpoint.
+
 **Storage is a pluggable adapter** (same pattern as maps and the database):
 
 | Adapter | Use | Notes |
