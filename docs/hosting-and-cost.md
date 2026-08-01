@@ -91,8 +91,15 @@ one. The **flagship** likely runs **PostGIS** since it aggregates all peers.
 - **Resize/recompress** to web size. A ~12 MB phone photo becomes ~300 KB — roughly
   40× smaller, which makes every storage option cheap.
 
+**Photos arrive with the submission — there is no separate upload step.** Files are
+saved as part of saving the report, so a stored file can never exist without a
+report (no orphans, no sweep needed), and the **submission rate limit covers uploads
+too**. Resize **client-side before upload** so a citizen on weak mobile signal isn't
+waiting on a 12 MB transfer; still strip EXIF **server-side**, since anything done in
+the browser can be bypassed.
+
 **Lifecycle — photos are private until the report is accepted:**
-1. **Uploaded / pending review** — stored but **not publicly served**. Visible to
+1. **Submitted / pending review** — stored but **not publicly served**. Visible to
    staff in the review queue only; access is **enforced by the server**, never by an
    unguessable URL. On the `s3` adapter this means objects are **private by default**
    (no public-read ACL), served via the app or a signed URL.
@@ -100,10 +107,6 @@ one. The **flagship** likely runs **PostGIS** since it aggregates all peers.
    in the published report.
 3. **Rejected** — the report **and its files are deleted**: original plus every
    resized derivative, including from object storage.
-
-**Orphaned uploads.** A citizen may attach a photo and then abandon the form. Those
-files need a periodic **sweep** (delete unattached uploads older than N hours) or they
-accumulate indefinitely — a real abuse vector on an anonymous endpoint.
 
 **Storage is a pluggable adapter** (same pattern as maps and the database):
 
@@ -115,9 +118,9 @@ accumulate indefinitely — a real abuse vector on an anonymous endpoint.
 *(SQLite blob storage was considered and **rejected** — keeping photos out of the
 database keeps the DB small and nimble.)*
 
-**Abuse limits (required).** The upload endpoint is anonymous and unauthenticated,
-so it needs a **max file size**, a **max photos per report**, and **rate limiting**,
-or it becomes free file hosting for strangers.
+**Abuse limits (required).** Submission is anonymous and unauthenticated, so it needs
+a **max file size**, a **max photos per report**, and **rate limiting on submission**
+— which, because photos only arrive with a report, is also the upload limit.
 
 ## Where cost concentrates — and how it's paid
 The only node needing real capacity is the **flagship** (it aggregates all peers and
