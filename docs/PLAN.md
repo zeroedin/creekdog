@@ -217,8 +217,10 @@ identity, data licensing, report fields, geometry, data migration.)*
 4. **Registration auth:** how the flagship verifies a registrant controls the node
    domain (e.g. a challenge file), to prevent spoofed nodes.
 5. **Consortium governance:** legal/financial structure for shared hosting.
-6. **Map tooling:** Leaflet is the lean (framework-agnostic, no API key or billing
-   account — matters for $0 hosting); confirm before Phase 1.
+6. **Address geocoding** — if citizens should *search an address* rather than drop a
+   pin, free geocoders (OSM Nominatim) have usage limits and Google's is notably
+   better. Pin-drop + device GPS likely covers the real "I'm standing at the creek"
+   case; decide whether search is needed at all.
 7. **creekdog.org migration:** retire the defunct Vue app + fix the broken
    `gh-pages` deploy workflow (it currently nests `…temp-deployment-folder/`
    directories); decide what the domain serves during the rebuild.
@@ -254,5 +256,6 @@ identity, data licensing, report fields, geometry, data migration.)*
 | 2026-07-08 | **Runtime = Node.js/TypeScript** — one language across backend and the Lit frontend; largest web contributor pool; deploys anywhere incl. serverless free tiers. |
 | 2026-07-08 | **Published data license = CC-BY** — free reuse with attribution to the watershed group. (Code stays MIT.) Recorded in each node's descriptor. |
 | 2026-07-08 | **Staff auth (admin side only; citizens never log in):** **password set at account creation** as the baseline, with **optional magic-link and passkey** sign-in and **TOTP 2FA** available. Rejects WebID/Solid-OIDC for now — full cost, no benefit, since staff log into exactly one app and there are no per-citizen pods. Additive later if wanted. |
+| 2026-08-01 | **Maps: open by default, configurable per node.** Library = **Leaflet** (framework-agnostic, no key). Default basemap = **USGS National Map** (`USGSTopo` + the `USGSHydroCached` overlay so the creek network is drawn) — public domain, **no API key, no billing account**, authoritative, and avoids OSM's production usage-policy limits. Note it's an ArcGIS service: tile path is `{z}/{y}/{x}` (y before x). A node **MAY** configure another provider (incl. Google) if it wants better geocoding/familiarity. **Google rejected as the default**: requires a per-node billing account + key (breaks $0/easy-install), ToS friction with redistributing open data, and contradicts the open/agnostic ethos. |
 | 2026-07-08 | **No data migration — fresh start.** The new system begins empty; the old closed-source Creekdog data stays archived. No importer needed in Phase 1. |
 | 2026-07-08 | **Node publishing contract specified** (`node-contract.md`). A node = 3 URLs (descriptor + paged JSON-LD reports feed w/ opaque-cursor incremental harvest + dereferenceable report resources) + registration; flagship harvests via registry + polling. Published = **verified only, PII-stripped**; node resolves `category → concern` and publishes both; versioned by `contractVersion` + `vocabulary`. Plain HTTP + JSON-LD, no triplestore/SPARQL. |
