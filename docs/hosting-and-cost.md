@@ -82,6 +82,29 @@ loading extensions — fine on VPS/Docker, but **many serverless SQLite platform
 (lat/lon math). So SpatiaLite is a **self-hosted-only** capability, not a serverless
 one. The **flagship** likely runs **PostGIS** since it aggregates all peers.
 
+## Photo storage
+
+**Processing on upload (always, non-negotiable):**
+- **Strip EXIF.** Phone photos embed **GPS coordinates** and device identifiers.
+  Since submission is anonymous, publishing an unstripped photo would leak exactly
+  what the rest of the privacy model protects. Strip metadata before storing.
+- **Resize/recompress** to web size. A ~12 MB phone photo becomes ~300 KB — roughly
+  40× smaller, which makes every storage option cheap.
+
+**Storage is a pluggable adapter** (same pattern as maps and the database):
+
+| Adapter | Use | Notes |
+|---|---|---|
+| **filesystem** *(default)* | self-hosted VPS/Docker node | A folder next to the app. Simplest thing that works. Back up the folder alongside the DB. |
+| **s3** | serverless nodes, or any node wanting offloaded storage | Any S3-compatible service — Cloudflare R2, Backblaze B2, MinIO (self-hosted). Generous free tiers. |
+
+*(SQLite blob storage was considered and **rejected** — keeping photos out of the
+database keeps the DB small and nimble.)*
+
+**Abuse limits (required).** The upload endpoint is anonymous and unauthenticated,
+so it needs a **max file size**, a **max photos per report**, and **rate limiting**,
+or it becomes free file hosting for strangers.
+
 ## Where cost concentrates — and how it's paid
 The only node needing real capacity is the **flagship** (it aggregates all peers and
 serves the cross-watershed map). That is the correct place for cost to land, because

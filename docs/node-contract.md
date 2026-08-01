@@ -148,6 +148,9 @@ Idempotent and resumable: re-running from a saved cursor is always safe.
 
 ## 6. Privacy boundary (publishing is the gate)
 - Published reports carry **no reporter PII** — contact/identity is stripped at publish.
+- **Photos are EXIF-stripped on upload** — phone images embed GPS and device IDs, so
+  an unstripped photo would leak the reporter's position regardless of the rules
+  above. See `hosting-and-cost.md`.
 - **Only accepted reports are published.** Nothing mid-review appears in the feed, and
   **rejected reports are deleted outright** (never published, no trace).
 - **Routing is never published** — who was notified, when, and any agency case number

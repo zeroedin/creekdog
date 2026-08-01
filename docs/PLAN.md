@@ -215,8 +215,9 @@ identity, data licensing, report fields, geometry, data migration.)*
 
 *(Also done: `@context` + JSON Schema — see `spec/`; agency selection — reviewer-chosen.)*
 
-1. **Photo hosting:** served from the node vs. copied/cached by the flagship
-   (link rot if a node disappears).
+1. **Flagship photo caching:** the node stores and serves its own photos (decided);
+   still open is whether the **flagship copies them** when harvesting, or hot-links
+   the node and risks link rot if a peer disappears.
 2. **Registration auth:** how the flagship verifies a registrant controls the node
    domain (e.g. a challenge file), to prevent spoofed nodes.
 3. **Consortium governance:** legal/financial structure for shared hosting.
@@ -259,6 +260,7 @@ identity, data licensing, report fields, geometry, data migration.)*
 | 2026-07-08 | **Runtime = Node.js/TypeScript** — one language across backend and the Lit frontend; largest web contributor pool; deploys anywhere incl. serverless free tiers. |
 | 2026-07-08 | **Published data license = CC-BY** — free reuse with attribution to the watershed group. (Code stays MIT.) Recorded in each node's descriptor. |
 | 2026-07-08 | **Staff auth (admin side only; citizens never log in):** **password set at account creation** as the baseline, with **optional magic-link and passkey** sign-in and **TOTP 2FA** available. Rejects WebID/Solid-OIDC for now — full cost, no benefit, since staff log into exactly one app and there are no per-citizen pods. Additive later if wanted. |
+| 2026-08-01 | **Photos: pluggable storage adapter, filesystem default.** `filesystem` (default, self-hosted) and `s3` (S3-compatible: R2/B2/MinIO) adapters; **SQLite-blob storage rejected** to keep the DB small. **EXIF stripped + resized on upload, always** — phone photos embed GPS/device IDs and would otherwise leak the anonymous reporter's position. Anonymous upload endpoint requires **size caps, per-report photo limits, and rate limiting**. |
 | 2026-08-01 | **No auto-routing in v1 — the reviewer selects the agency** when accepting a report, from the watershed's agency list. **Categories therefore carry no routing** (label + core-concern mapping only) — *supersedes* the 2026-07-08 "category → agency is the first-class relationship" decision. No routing-rules table, no jurisdiction engine. **Future:** auto-*suggest* an agency via per-agency bounding boxes/areas drawn on the map — a suggestion the reviewer can change, never an automatic send. |
 | 2026-08-01 | **Published data is minimal.** The public feed carries **no status** (presence = accepted), **no routing** (who was notified stays internal), and **no reporter PII**. **Rejected reports are deleted outright** — never published, no trace. Only an already-published report needs a small `RemovedReport` tombstone so harvesters drop their copy. |
 | 2026-08-01 | **Maps: open by default, configurable per node.** Library = **Leaflet** (framework-agnostic, no key). Default basemap = **USGS National Map** (`USGSTopo` + the `USGSHydroCached` overlay so the creek network is drawn) — public domain, **no API key, no billing account**, authoritative, and avoids OSM's production usage-policy limits. Note it's an ArcGIS service: tile path is `{z}/{y}/{x}` (y before x). A node **MAY** configure another provider (incl. Google) if it wants better geocoding/familiarity. **Google rejected as the default**: requires a per-node billing account + key (breaks $0/easy-install), ToS friction with redistributing open data, and contradicts the open/agnostic ethos. |
