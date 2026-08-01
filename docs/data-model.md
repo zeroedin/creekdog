@@ -28,7 +28,7 @@ ontology mapping (see `PLAN.md` §5).
   "reporter": { "contact": "steven@example.org" },  // OPTIONAL; omit = anonymous
 
   // ── system-managed ─────────────────────────────────────────────────
-  "id": "urn:uuid:9f1c…",                // client-generated (UUID/ULID), offline-safe
+  "id": "urn:uuid:0190f3a1-…",           // client-generated UUIDv7, offline-safe
   "watershed": "https://fodc.example/",  // tenant
   "observedAt": "2026-07-08T14:12:00Z",  // capture time (offline-aware)
   "submittedAt": "2026-07-08T14:20:00Z",
@@ -83,7 +83,7 @@ node metadata** (its geographic coverage in the federation — see `federation.m
     "coordinates": [ [ [-79.99,39.60], [-79.90,39.60], /* … */ ] ]  // stored as GeoJSON
   },
   "categoryScheme": "https://fodc.example/categories/",
-  "agencies": ["https://creekdog.org/agency/wv-dep"]
+  "agencies": ["https://fodc.example/agency/wv-dep"]  // node-local list the reviewer picks from
 }
 ```
 
@@ -97,8 +97,8 @@ Angler citizen-science observation — same "report" shape, different payload.
 ```jsonc
 {
   "@type": "FishCatch",
-  "id": "urn:uuid:...",
-  "watershed": "deckers-creek",
+  "id": "urn:uuid:0190f3b2-…",           // UUIDv7
+  "watershed": "https://fodc.example/",
   "species": "Salmo trutta",             // + optional common name
   "count": 1,
   "lengthCm": 31.5,
@@ -121,18 +121,18 @@ observations. Export targets: **EPA WQX** (chemistry), **GBIF** (biota).
 
 ## Standards mapping (summary)
 
+Per the scope discipline (`PLAN.md` §5), v1 uses **Creekdog's own terms** — we do not
+map our fields onto external ontologies. SKOS is the sole borrowed vocabulary.
+
 | Concern | v1 (citizen) | Later (interop/export) |
 |---|---|---|
-| Envelope | JSON-LD | JSON-LD / Turtle |
-| General props | schema.org | schema.org |
-| Location | GeoJSON | GeoSPARQL, USGS HUC |
-| Categories | per-watershed SKOS | — |
-| Provenance | PROV-O / Dublin Core (light) | PROV-O |
-| Chemistry | — | SOSA/SSN + QUDT → WQX |
-| Fish / biota | schema.org | Darwin Core → GBIF |
+| Envelope | JSON-LD (`spec/context/v1.jsonld`) | JSON-LD / Turtle |
+| General props | **Creekdog's own terms** (`cd:`) | — |
+| Location | GeoJSON (opaque `@json`) | GeoSPARQL, USGS HUC |
+| Categories | per-watershed **SKOS** → shared core | — |
+| Chemistry | — *(not collected)* | SOSA/SSN + QUDT → WQX |
+| Fish / biota | — *(v2)* | Darwin Core → GBIF |
 
 ## Open modeling questions
-- Photo/evidence storage: inline URLs vs. LDP non-RDF resources in the pod.
-- Identifier scheme: UUID vs. ULID (ULID sorts by time — nice for feeds).
-- How much of the report is public vs. staff-only (reporter contact must be
-  private; location may need coarsening for sensitive reports).
+- Whether **location needs coarsening** before publishing for sensitive reports
+  (reporter contact is already never published).
