@@ -31,11 +31,18 @@ flagship hosts them as a tenant; self-hosting is opt-in for sovereignty/capacity
 ## The near-$0 self-host recipe
 For a group that wants its own install without a budget:
 - **Static public site** (map + published reports) → free on GitHub/Cloudflare Pages.
-- **Dynamic bits** (accept submission, staff approve) → small serverless functions on
-  free tiers.
-- **Data** → free-tier serverless SQLite/Postgres (e.g. Cloudflare D1, Turso, Neon,
-  Supabase — examples; watershed volume won't exceed free limits).
+- **App** → a **Node-runtime** free tier (Vercel, Netlify Functions, Fly, Railway,
+  Render). *Needs work — this recipe is not yet validated end to end.*
+- **Data** → SQLite on disk where the host allows it, otherwise free-tier serverless
+  **Postgres (Neon, Supabase)**; watershed volume won't approach free limits.
 - Realistically **$0/mo**.
+
+> **Note — Cloudflare Workers/D1 is not the serverless target.** Choosing **Prisma**
+> (`PLAN.md`) means the Workers path is awkward: Prisma's bundle exceeds Workers'
+> 1 MB free-tier limit, and D1 has no transactions. The $0 tier therefore aims at
+> **Node-runtime hosts + Neon**, which Prisma supports well. This is the one place we
+> knowingly traded convenience for the single-schema SQLite↔Postgres benefit, and it
+> needs hands-on validation.
 
 ### Radical option: Git as the datastore
 Because data is small, append-mostly, and human-reviewed, reports can live as
