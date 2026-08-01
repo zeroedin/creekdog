@@ -64,7 +64,7 @@ cursor**: `GET https://fodc.example/reports?since=<cursor>`.
   "orderedBy": "modified-asc",        // change-feed order: oldest change first
   "next": "https://fodc.example/reports?since=CURSOR_ABC&page=2",  // more of THIS harvest
   "nextSync": "CURSOR_XYZ",           // store this; pass as ?since= on the NEXT harvest run
-  "items": [ /* Report and WithdrawnReport objects, inline */ ]
+  "items": [ /* PollutionReport and RemovedReport objects, inline */ ]
 }
 ```
 
@@ -91,22 +91,29 @@ summary+fetch). Each item is also dereferenceable at its own URL (§3).
   "description": "Orange discharge staining the bank.",
   "location": { "type": "Point", "coordinates": [-79.955, 39.629] },  // GeoJSON
   "observedAt": "2026-07-01T09:00:00Z",
-  "status": "verified",
   "modified": "2026-07-02T14:00:00Z",
   "photos": ["https://fodc.example/reports/123/photo/1.jpg"]
-  // NOTE: NO reporter contact / PII in the published form. See Privacy below.
+  // NOTE: no status field — presence in the feed MEANS accepted.
+  // NOTE: no reporter contact / PII, and no routing info. See Privacy below.
 }
 ```
 
-**Withdrawal = a tombstone** (so harvesters can remove it):
+**No `status` in the published form.** Everything in the feed is an accepted report,
+so a status field would be a constant. The full review lifecycle stays internal.
+
+**Removal of an already-published report** uses a small tombstone, so a flagship that
+already harvested a copy knows to drop it:
 ```jsonc
 {
-  "@type": "WithdrawnReport",
+  "@type": "RemovedReport",
   "id": "https://fodc.example/reports/123",
-  "status": "withdrawn",
   "modified": "2026-07-05T10:00:00Z"
 }
 ```
+Scope: this applies **only** to reports that were previously published. A report
+**rejected during review was never public** — it is simply deleted, with no tombstone
+and no trace in the feed. A node MAY discard a tombstone once all harvesters have
+seen it.
 
 > The node **resolves `category → concern` and publishes both.** The flagship therefore
 > aggregates on `concern` without crawling each node's category scheme.
@@ -131,7 +138,7 @@ at registration) schedules the node for harvest. Manual approval is fine for v1.
 For each registered node:
 1. `GET` the descriptor (conditional — ETag/Last-Modified). Note boundary/license.
 2. `GET reports?since=<savedCursor>`; follow `next` until exhausted.
-3. **Upsert** each `PollutionReport` by its `id`; **remove** any `WithdrawnReport` by `id`.
+3. **Upsert** each `PollutionReport` by its `id`; **delete** any `RemovedReport` by `id`.
 4. Save the collection's `nextSync` as the node's new cursor.
 5. Sleep until the next scheduled poll.
 
@@ -141,8 +148,12 @@ Idempotent and resumable: re-running from a saved cursor is always safe.
 
 ## 6. Privacy boundary (publishing is the gate)
 - Published reports carry **no reporter PII** — contact/identity is stripped at publish.
-- Only **`verified`** reports (and `withdrawn` tombstones) are ever published; nothing
-  mid-review (`submitted`/`out-of-area`/etc.) appears in the feed.
+- **Only accepted reports are published.** Nothing mid-review appears in the feed, and
+  **rejected reports are deleted outright** (never published, no trace).
+- **Routing is never published** — who was notified, when, and any agency case number
+  stay internal to the node.
+- The published form therefore carries **no status** and **no routing**: presence in
+  the feed means accepted, and that is all the outside world learns.
 - Sensitive locations **MAY** be coarsened before publishing (node's choice).
 - This means the feed is safe to be fully public — which is what makes open federation
   and open data licensing possible.

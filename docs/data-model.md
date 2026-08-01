@@ -32,11 +32,18 @@ ontology mapping (see `PLAN.md` §5).
   "watershed": "https://fodc.example/",  // tenant
   "observedAt": "2026-07-08T14:12:00Z",  // capture time (offline-aware)
   "submittedAt": "2026-07-08T14:20:00Z",
-  "status": "submitted",                 // submitted|triaged|routed|verified|closed|rejected
-  "outOfArea": false,                    // set by the in-bounds gate (agency-routing.md)
-  "routing": { "agency": null, "notifiedAt": null }
+  "status": "submitted",                 // INTERNAL ONLY — never published
+  "outOfArea": false,                    // INTERNAL — set by the in-bounds gate
+  "routing": { "agency": null, "notifiedAt": null }  // INTERNAL — never published
 }
 ```
+
+### Internal vs. published
+Only a subset ever leaves the node. The **published** form drops `reporter`,
+`submittedAt`, `status`, `outOfArea`, and `routing` entirely — presence in the public
+feed *means* the report was accepted, so no status field is needed, and who was
+notified is nobody else's business. **Rejected reports are deleted**, never published.
+See `node-contract.md`.
 
 `location` is only ever a **lat/long point** — the watershed boundary is the sole
 non-point geometry in the system, and it lives on the `Watershed`, not the report.
