@@ -98,6 +98,22 @@ too**. Resize **client-side before upload** so a citizen on weak mobile signal i
 waiting on a 12 MB transfer; still strip EXIF **server-side**, since anything done in
 the browser can be bypassed.
 
+*Client-side resize uses plain browser APIs — no WASM, no libraries:*
+```js
+const bitmap = await createImageBitmap(file, { resizeWidth: 1600 });
+const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+canvas.getContext('2d').drawImage(bitmap, 0, 0);
+const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.8 });
+```
+*(Older equivalent: `<img>` + `<canvas>` + `canvas.toBlob()`.)* A canvas holds only
+pixels, so re-encoding **discards EXIF automatically** — the GPS data typically never
+leaves the phone. WASM (e.g. MozJPEG/AVIF encoders) would only buy better compression
+at the same quality; unnecessary here.
+
+**Long term:** the native mobile apps capture offline at the creek and upload when a
+good connection returns — which is why the schema is offline-aware (client-generated
+IDs, explicit capture timestamps). See `PLAN.md` §4.
+
 **Lifecycle — photos are private until the report is accepted:**
 1. **Submitted / pending review** — stored but **not publicly served**. Visible to
    staff in the review queue only; access is **enforced by the server**, never by an
