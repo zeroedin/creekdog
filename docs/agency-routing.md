@@ -35,20 +35,29 @@ knows only its own boundary; the flagship enables the handoff.)
 
 ## Two-layer model
 
-### Layer 1 — Routing map (business config, per watershed)
-Core relationship: **category → agency**.
-- May be **one category → many agencies** (notify several parties).
-- May later be refined by **location / jurisdiction**: the same category can route
-  differently depending on where in the watershed the report is (municipal vs.
-  county vs. state). Start with `category → agency`; add spatial rules later.
+### Layer 1 — Agency selection: **the reviewer chooses** (v1)
+There is **no automatic routing in v1.** When a reviewer accepts a report, they
+**select the agency** (or agencies) from the watershed's list. Nothing is derived
+from the category.
+
+This means:
+- **Categories carry no routing.** A category is just a label + its core-concern
+  mapping for federation (`vocabulary.md`). *(Supersedes the earlier
+  "category → agency is the first-class relationship" decision.)*
+- A watershed maintains a simple **list of agencies**; the reviewer picks from it.
+- No routing-rules table, no spatial lookup, no jurisdiction engine to build.
 
 ```
-RoutingRule:
-  watershed
-  category            # this watershed's SKOS concept
-  area?              # optional GeoJSON / jurisdiction filter (later)
-  agencies[]         # one or more targets
+Watershed:
+  agencies[]          # the list the reviewer picks from
+
+Report (on accept):
+  selectedAgencies[]  # chosen by the reviewer, not computed
 ```
+
+**Future step:** auto-*suggest* the agency by drawing **geographic bounding boxes /
+areas on the map** per agency — the report's location falls in an area, that agency
+is pre-selected. Still a suggestion the reviewer can change, never an automatic send.
 
 ### Layer 2 — Delivery adapter (per agency)
 Each agency has a **delivery mechanism**. Model it as a pluggable adapter so new
@@ -101,10 +110,9 @@ This gives accountability and lets Creekdog report status back to the (opted-in)
 reporter: "your report was forwarded to X on DATE, case #NNN."
 
 ## Open questions
-- How is **jurisdiction** determined per watershed — static table, or spatial lookup
-  against agency service-area boundaries? (Spatial version = point-in-polygon; needs
-  Rung-3 SpatiaLite or Rung-4 PostGIS — see `hosting-and-cost.md`. Static table works
-  on any node, incl. serverless.)
+- ~~How is jurisdiction determined?~~ **DECIDED:** the **reviewer selects the agency**
+  at accept time (v1). Future: auto-*suggest* via per-agency bounding boxes/areas
+  drawn on the map — a suggestion, never an automatic send.
 - Do we need **escalation** (no acknowledgement in N days → notify next party)?
 - Where do agency **credentials** (API keys, form quirks) live and who maintains them?
 - Should reporters be able to **opt in to status updates** while staying anonymous

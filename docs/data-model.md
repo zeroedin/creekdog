@@ -50,20 +50,18 @@ non-point geometry in the system, and it lives on the `Watershed`, not the repor
 
 ### Report categories (SKOS, per-watershed — NOT pre-seeded)
 Creekdog ships **no default categories.** Each watershed defines its own
-`ConceptScheme`. The first-class thing is not the label but the
-**category → routing-agency relationship** (see `agency-routing.md`): every
-category a watershed creates carries the decision of which agency it routes to.
+`ConceptScheme`.
 
-A local category carries three things — label (local), `routesTo` (routing), and
-`broadMatch` (federation mapping to the shared core). See `vocabulary.md`.
+A local category carries just **two** things — the citizen-facing label, and its
+`broadMatch` mapping to the shared core concern (`vocabulary.md`). It carries **no
+routing**: the reviewer selects the agency at accept time (`agency-routing.md`).
 
 ```jsonc
 {
   "@type": "skos:Concept",
-  "id": "https://creekdog.org/w/deckers-creek/category/orange-water",
+  "id": "https://fodc.example/category/orange-water",
   "prefLabel": "Orange water / iron staining",              // local, citizen-facing
-  "inScheme": "https://creekdog.org/w/deckers-creek/categories/",
-  "routesTo": ["https://creekdog.org/agency/wv-dep"],        // routing (local decision)
+  "inScheme": "https://fodc.example/categories/",
   "broadMatch": "https://creekdog.org/vocab/concern/mining"  // → shared core (federation)
 }
 ```

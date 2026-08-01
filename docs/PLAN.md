@@ -1,7 +1,7 @@
 # Creekdog — Planning Document
 
 > Status: **first draft**, actively evolving. This is a working plan, not a spec.
-> Last substantive update: 2026-07-08.
+> Last substantive update: 2026-08-01.
 
 ## 0. TL;DR — the simple version (read this first)
 
@@ -84,36 +84,38 @@ through a consortium.
 | Actor | Role | Identity |
 |---|---|---|
 | **Citizen reporter** | Submits reports/observations over the plain web. Often anonymous. | None required (optional contact for follow-up) |
-| **Watershed group (tenant)** | Owns and stewards the data space ("the pod"). Configures categories, agency routing, map. Reviews/verifies reports. | Authenticated (org accounts) |
+| **Watershed group (tenant)** | Owns and stewards its data. Configures categories, its agency list, and boundary. Reviews reports and selects the agency on accept. | Authenticated (staff accounts) |
 | **Host / operator** | Runs an install; may host one or many watershed groups. Could be an individual, an org, or a consortium. | Server admin |
 | **Flagship (creekdog.org)** | The aggregator + registry + reference install + optional host for colocated peers. | Project operator (Steven) |
 | **Peer** | A watershed group's node in the federation — self-hosted or colocated. **FODC = peer #1.** | Per-node |
 
 **Key decision:** the **data steward is the watershed group, not the individual
 citizen.** Citizens interact through the web and are frequently anonymous, so we do
-**not** require per-person Solid pods. Each watershed group gets a
-**Solid-compatible datastore** it owns; citizen submissions land there.
+**not** require per-person Solid pods. Each watershed group owns its own datastore;
+citizen submissions land there.
 
 ## 4. Architecture (current direction)
 
 ```
   Citizen (browser, anonymous)                Watershed staff (browser, authed)
-        │  JSON-LD report                             │  review / verify / config
-        ▼                                             ▼
+        │  submit report                              │  review → accept/reject
+        ▼                                             ▼  → pick agency → send
   ┌──────────────────────────────────────────────────────────────┐
-  │  Creekdog API  (per-install, multi-tenant)                    │
-  │  - Public submission endpoint (anti-spam, no auth)            │
-  │  - Solid-compatible read/write of report resources (LDP)      │
-  │  - Query endpoint (filtered feeds; later: SPARQL/GeoJSON)     │
-  │  - Agency-routing engine (report → notify correct agency)     │
-  │  - Tenancy: data partitioned per watershed group              │
+  │  Creekdog node  (Node.js/TypeScript, multi-tenant capable)    │
+  │  - Public submission endpoint (no auth)                       │
+  │  - In-bounds gate: point-in-polygon vs. watershed boundary    │
+  │  - Review queue (the spam filter; rejected = deleted)         │
+  │  - Agency delivery: reviewer selects agency, then send        │
+  │  - Publishes the node contract (JSON-LD) for harvesting       │
   └──────────────────────────────────────────────────────────────┘
         │
         ▼
-  Datastore (Linked Data / RDF quad store, per-tenant graphs)
+  Small database — SQLite by default (a file); Postgres/PostGIS optional
         │
-        ├─► Public verified feed (JSON-LD, GeoJSON, RSS/Atom)
-        └─► Export adapters (later): Darwin Core → GBIF, chemistry → WQX/SOSA
+        └─► Public feed: accepted reports as JSON-LD (no PII, no status, no routing)
+                 │
+                 ▼  harvested by
+            Flagship aggregator (creekdog.org) → cross-watershed map
 ```
 
 - **Native mobile apps come later** (iOS/Android) and will handle offline field
@@ -123,12 +125,17 @@ citizen.** Citizens interact through the web and are frequently anonymous, so we
 - **Offline:** v1 web is online-only, but the **schema is offline-aware**
   (client-generated stable IDs, explicit capture timestamps) so later sync is clean.
 
-### Solid / Linked Web Storage
-Solid (and the W3C **Linked Web Storage** WG standardizing it) is the model for the
-tenant datastore: reports as LDP resources, access control via WAC/ACP, WebID for
-staff identity. We adopt Solid **pragmatically**: the watershed group's storage is
-Solid-shaped, but citizen submission is a simple public POST, not a per-user pod
-write. Candidate server to evaluate: **Community Solid Server (CSS)**.
+### Solid / Linked Web Storage — where we actually landed
+Solid (and the W3C **Linked Web Storage** WG standardizing it) inspired the approach,
+but we adopt it **pragmatically, not literally**:
+- ✅ **Kept:** Linked Data as JSON-LD, stable dereferenceable URLs, open publishing —
+  the parts that make federation work.
+- ❌ **Not adopted:** running a Solid server (CSS), per-citizen pods, WAC/ACP, and
+  WebID/Solid-OIDC login. Each was full cost for no benefit at our shape — citizens
+  are anonymous, the watershed group is the data steward, and staff log into exactly
+  one app. See `backend-options.md`.
+
+All of it remains addable later as an additive layer; nothing here forecloses it.
 
 ## 5. Standards stack (right-sized)
 
@@ -206,20 +213,18 @@ write. Candidate server to evaluate: **Community Solid Server (CSS)**.
 *(Resolved and moved to the decisions log: server/runtime, storage engine, staff
 identity, data licensing, report fields, geometry, data migration.)*
 
-*(Also done: `@context` + JSON Schema — see `spec/`.)*
+*(Also done: `@context` + JSON Schema — see `spec/`; agency selection — reviewer-chosen.)*
 
-1. **Agency routing:** how are agencies + jurisdictions modeled per watershed?
-   Static config table first; geospatial jurisdiction lookup later.
-2. **Photo hosting:** served from the node vs. copied/cached by the flagship
+1. **Photo hosting:** served from the node vs. copied/cached by the flagship
    (link rot if a node disappears).
-3. **Registration auth:** how the flagship verifies a registrant controls the node
+2. **Registration auth:** how the flagship verifies a registrant controls the node
    domain (e.g. a challenge file), to prevent spoofed nodes.
-4. **Consortium governance:** legal/financial structure for shared hosting.
-5. **Address geocoding** — if citizens should *search an address* rather than drop a
+3. **Consortium governance:** legal/financial structure for shared hosting.
+4. **Address geocoding** — if citizens should *search an address* rather than drop a
    pin, free geocoders (OSM Nominatim) have usage limits and Google's is notably
    better. Pin-drop + device GPS likely covers the real "I'm standing at the creek"
    case; decide whether search is needed at all.
-6. **creekdog.org migration:** retire the defunct Vue app + fix the broken
+5. **creekdog.org migration:** retire the defunct Vue app + fix the broken
    `gh-pages` deploy workflow (it currently nests `…temp-deployment-folder/`
    directories); decide what the domain serves during the rebuild.
 
@@ -254,6 +259,7 @@ identity, data licensing, report fields, geometry, data migration.)*
 | 2026-07-08 | **Runtime = Node.js/TypeScript** — one language across backend and the Lit frontend; largest web contributor pool; deploys anywhere incl. serverless free tiers. |
 | 2026-07-08 | **Published data license = CC-BY** — free reuse with attribution to the watershed group. (Code stays MIT.) Recorded in each node's descriptor. |
 | 2026-07-08 | **Staff auth (admin side only; citizens never log in):** **password set at account creation** as the baseline, with **optional magic-link and passkey** sign-in and **TOTP 2FA** available. Rejects WebID/Solid-OIDC for now — full cost, no benefit, since staff log into exactly one app and there are no per-citizen pods. Additive later if wanted. |
+| 2026-08-01 | **No auto-routing in v1 — the reviewer selects the agency** when accepting a report, from the watershed's agency list. **Categories therefore carry no routing** (label + core-concern mapping only) — *supersedes* the 2026-07-08 "category → agency is the first-class relationship" decision. No routing-rules table, no jurisdiction engine. **Future:** auto-*suggest* an agency via per-agency bounding boxes/areas drawn on the map — a suggestion the reviewer can change, never an automatic send. |
 | 2026-08-01 | **Published data is minimal.** The public feed carries **no status** (presence = accepted), **no routing** (who was notified stays internal), and **no reporter PII**. **Rejected reports are deleted outright** — never published, no trace. Only an already-published report needs a small `RemovedReport` tombstone so harvesters drop their copy. |
 | 2026-08-01 | **Maps: open by default, configurable per node.** Library = **Leaflet** (framework-agnostic, no key). Default basemap = **USGS National Map** (`USGSTopo` + the `USGSHydroCached` overlay so the creek network is drawn) — public domain, **no API key, no billing account**, authoritative, and avoids OSM's production usage-policy limits. Note it's an ArcGIS service: tile path is `{z}/{y}/{x}` (y before x). A node **MAY** configure another provider (incl. Google) if it wants better geocoding/familiarity. **Google rejected as the default**: requires a per-node billing account + key (breaks $0/easy-install), ToS friction with redistributing open data, and contradicts the open/agnostic ethos. |
 | 2026-07-08 | **No data migration — fresh start.** The new system begins empty; the old closed-source Creekdog data stays archived. No importer needed in Phase 1. |

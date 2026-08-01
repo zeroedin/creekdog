@@ -13,13 +13,12 @@
 **map onto a small shared *core* scheme.** Local wording for humans; shared core for
 the federation.
 
-## A category carries three things
+## A category carries two things
 1. **Label** — citizen-facing wording (local, per-watershed).
-2. **`routesTo`** — which agency it notifies (local business decision; `agency-routing.md`).
-3. **`broadMatch` → core** — which shared concept it rolls up to (federation).
+2. **`broadMatch` → core** — which shared concept it rolls up to (federation).
 
-Routing is a *local* decision; core-mapping is the *interoperability* decision.
-Different jobs, both attached to the local category.
+A category carries **no routing**. The reviewer selects the agency when accepting a
+report (`agency-routing.md`), so classification and delivery stay independent.
 
 ## Shared core concern scheme (v0 — ACCEPTED, curated by flagship)
 Stable URIs under `https://creekdog.org/vocab/concern/<id>`. Additive-only.
@@ -58,13 +57,12 @@ cover most watersheds. `mining` and `oil-gas` are included because Deckers Creek
   "inScheme": "https://creekdog.org/vocab/concern/"
 }
 
-// FODC local category — label + routing + core mapping
+// FODC local category — label + core mapping (no routing)
 {
   "@type": "skos:Concept",
-  "id": "https://creekdog.org/w/deckers-creek/category/orange-water",
+  "id": "https://fodc.example/category/orange-water",
   "prefLabel": "Orange water / iron staining",          // local, citizen-facing
-  "inScheme": "https://creekdog.org/w/deckers-creek/categories/",
-  "routesTo": ["https://creekdog.org/agency/wv-dep"],    // routing (local)
+  "inScheme": "https://fodc.example/categories/",
   "broadMatch": "https://creekdog.org/vocab/concern/mining"  // federation
 }
 ```
