@@ -186,8 +186,10 @@ All of it remains addable later as an additive layer; nothing here forecloses it
 
 ## 8. Roadmap (phased)
 
-- **Phase 0 — Foundations (now).** This plan; data-model sketch; retire the old
-  Vue deploy; decide server/runtime; scaffold repo (API + web-components frontend).
+- **Phase 0 — Foundations (now).** This plan; data model; the published contract
+  (`spec/`). Next: **scaffold the repo and get it running locally** — Node/TS service
+  + SQLite + Lit frontend, `git clone && npm install && npm start`. **Local-first:**
+  no deployment, no domain, no cloud concerns until the app works on a laptop.
 - **Phase 1 — Incident report MVP.** Single tenant. Define the **watershed
   boundary** (import HUC/GeoJSON, display on map, in-bounds check). Submit a
   pollution report (category + location on a map + description + photo + optional
@@ -225,9 +227,10 @@ identity, data licensing, report fields, geometry, data migration.)*
    pin, free geocoders (OSM Nominatim) have usage limits and Google's is notably
    better. Pin-drop + device GPS likely covers the real "I'm standing at the creek"
    case; decide whether search is needed at all.
-5. **creekdog.org migration:** retire the defunct Vue app + fix the broken
-   `gh-pages` deploy workflow (it currently nests `…temp-deployment-folder/`
-   directories); decide what the domain serves during the rebuild.
+*(**Deferred, not open:** creekdog.org migration — retiring the defunct Vue app,
+fixing the broken `gh-pages` workflow that nests `…temp-deployment-folder/`
+directories, and deciding what the domain serves. **Build locally first**; cloud
+hosting and the domain come after the app runs on a laptop.)*
 
 ## 10. Decisions log
 
@@ -260,6 +263,7 @@ identity, data licensing, report fields, geometry, data migration.)*
 | 2026-07-08 | **Runtime = Node.js/TypeScript** — one language across backend and the Lit frontend; largest web contributor pool; deploys anywhere incl. serverless free tiers. |
 | 2026-07-08 | **Published data license = CC-BY** — free reuse with attribution to the watershed group. (Code stays MIT.) Recorded in each node's descriptor. |
 | 2026-07-08 | **Staff auth (admin side only; citizens never log in):** **password set at account creation** as the baseline, with **optional magic-link and passkey** sign-in and **TOTP 2FA** available. Rejects WebID/Solid-OIDC for now — full cost, no benefit, since staff log into exactly one app and there are no per-citizen pods. Additive later if wanted. |
+| 2026-08-01 | **Local-first build order.** Scaffold and run the app **locally** (Node/TS + SQLite + Lit) before any deployment. **creekdog.org migration is deferred** — not retiring the old Vue app, fixing `gh-pages`, or choosing hosting until the thing works on a laptop. |
 | 2026-08-01 | **Identifiers = UUIDv7** (RFC 9562). Supersedes the UUID-vs-ULID question: it *is* a UUID (universal DB/tooling support) *and* sorts by creation time, which suits our cursor-paginated change feed and gives better index locality than random v4. Client-generatable, so the offline mobile apps can mint IDs at the creek. Clock skew is harmless — the feed orders by the server-stamped `modified`. |
 | 2026-08-01 | **Photos.** Arrive **with the submission** (no separate upload endpoint → no orphans; submission rate limiting covers uploads). **EXIF stripped + resized server-side, always** — phone photos embed GPS/device IDs that would leak an anonymous reporter's position; also resize client-side for weak mobile signal. **Private until accepted** (staff-only, server-enforced; S3 objects private by default), public on acceptance, **deleted with the report on rejection** (all derivatives + object storage). Storage is a **pluggable adapter**: `filesystem` default, `s3` (R2/B2/MinIO) optional; **SQLite-blob rejected**. Requires size caps, per-report photo limits, and submission rate limiting. |
 | 2026-08-01 | **No auto-routing in v1 — the reviewer selects the agency** when accepting a report, from the watershed's agency list. **Categories therefore carry no routing** (label + core-concern mapping only) — *supersedes* the 2026-07-08 "category → agency is the first-class relationship" decision. No routing-rules table, no jurisdiction engine. **Future:** auto-*suggest* an agency via per-agency bounding boxes/areas drawn on the map — a suggestion the reviewer can change, never an automatic send. |
